@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Anagraph;
 use App\AnagraphCompose;
 use App\Medicament;
 
 class MedicineController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     //
     public function list()
     {
         $posts = Anagraph::where('is_del', '=', 0)
-                ->orderBy('ma_id')
-                ->paginate(config('blog.posts_per_page'));
+        ->orderBy('ma_id')
+        ->paginate(config('blog.posts_per_page'));
 
         return view('medicine.list', compact('posts'));
     }

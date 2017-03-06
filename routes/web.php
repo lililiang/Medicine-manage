@@ -12,8 +12,12 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
+
+// 登陆认证
+// Route::post('/auth/login', 'Auth\AuthController@postLogin');
+// Route::get('/auth/logout', 'Auth\AuthController@getLogout');
 
 Route::get('/list', 'MedicineController@list');
 Route::get('/detail/{ma_id}', 'MedicineController@showAnagraph');
@@ -25,3 +29,6 @@ Route::get('/add', function () {
 });
 
 Route::post('/create', 'MedicineController@createAnagraph');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
