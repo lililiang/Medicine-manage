@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>{{ $anagraph['anagraph_name'] }}</title>
+        <title>新增方剂</title>
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
         <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
     </head>
@@ -8,17 +8,16 @@
         <div class="container">
             <hr>
             <form class="pure-form pure-form-aligned js-slidetitlebanners">
-                <input name="ma_id" type="hidden" class="form-control" id="anagraphId" value="{{ $anagraph['ma_id'] }}" />
                 <div class="form-group">
                     <label for="anagraph_name" class="col-sm-2 control-label">药方:</label>
                     <div class="col-sm-10">
-                        <input name="anagraph_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="{{ $anagraph['anagraph_name'] }}" placeholder="药方">
+                        <input name="anagraph_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="" placeholder="药方">
                     </div>
                 </div>
                 <div class="ml5 mt10 form-group">
                     <label for="anagraph_origin" class="col-sm-2 control-label">药方来源:</label>
                     <div class="col-sm-10">
-                        <input name="anagraph_origin" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="{{ $anagraph['anagraph_origin'] }}" placeholder="药方来源">
+                        <input name="anagraph_origin" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="" placeholder="药方来源">
                     </div>
                 </div>
                 <div class="form-group">
@@ -33,18 +32,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($anagraph['consist'] as $key => $post)
-                                <tr class="js-slide_one_block">
-                                    <th scope="row">
-                                        <input name="medicines[{{ $key }}][mac_id]" type="hidden" class="form-control" value="{{ $post['mac_id'] }}" />
-                                        <input name="medicines[{{ $key }}][mm_id]" type="hidden" class="form-control" value="{{ $post['mm_id'] }}" />
-                                    </th>
-                                    <td><input name="medicines[{{ $key }}][name]" class="" type="text" autocomplete="off" value="{{ $post['medicine_name'] }}" /></td>
-                                    <td><input name="medicines[{{ $key }}][dosage]" class="" type="text" autocomplete="off" value="{{ $post['dosage'] }}" /></td>
-                                    <td><input name="medicines[{{ $key }}][usage]" class="" type="text" autocomplete="off" value="{{ $post['usage'] }}" /></td>
-                                    <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
-                                </tr>
-                            @endforeach
+                            <tr class="js-slide_one_block">
+                                <th scope="row"></th>
+                                <td><input name="medicines[][name]" class="" type="text" autocomplete="off" value="" /></td>
+                                <td><input name="medicines[][dosage]" class="" type="text" autocomplete="off" value="" /></td>
+                                <td><input name="medicines[][usage]" class="" type="text" autocomplete="off" value="" /></td>
+                                <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -96,7 +90,7 @@
                 }
                 //统一的向后台提交的处理
                 function doSaveData(data){
-                    $.post("/doedit", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                    $.post("/create", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
                         // res = $.parseJSON(res);
                         if (res == '0') {
                             alert('提交出错，请重新编辑');

@@ -17,7 +17,7 @@ class CreateAnagraphsTable extends Migration
             $table->increments('ma_id');
             $table->string('anagraph_name');
             $table->string('anagraph_origin');
-            $table->text('indexs');
+            $table->text('indexs')->default('[]');
             $table->timestamp('create_time')->nullable();
             $table->timestamp('modify_time')->nullable();
             $table->tinyInteger('is_del')->default(0);

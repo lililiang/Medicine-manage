@@ -9,4 +9,10 @@ class Anagraph extends Model
     //
     const UPDATED_AT = 'modify_time';
     const CREATED_AT = 'create_time';
+
+    protected $fillable = [
+        'anagraph_name',
+        'anagraph_origin',
+        'indexs',
+    ];
 }

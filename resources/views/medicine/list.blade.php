@@ -7,6 +7,7 @@
         <div class="container">
             <h1>{{ config('medicine.title') }}</h1>
             <h5>Page {{ $posts->currentPage() }} of {{ $posts->lastPage() }}</h5>
+            <a class="btn btn-primary" href="/add" role="button">新增方剂</a>
             <hr>
             <ul>
             @foreach ($posts as $post)

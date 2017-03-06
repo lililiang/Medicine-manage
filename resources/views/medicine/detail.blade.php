@@ -33,9 +33,7 @@
 
             <hr>
             <a class="btn btn-default" href="/edit/{{ $anagraph['ma_id'] }}" role="button">编辑</a>
-            <button class="btn btn-primary" onclick="history.go(-1)">
-                « Back
-            </button>
+            <a class="btn btn-primary" href="/list" role="button"> « 返回</a>
         </div>
     </body>
 </html>

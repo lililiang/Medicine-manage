@@ -15,11 +15,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/', function () {
-//     return redirect('/blog');
-// });
-
 Route::get('/list', 'MedicineController@list');
 Route::get('/detail/{ma_id}', 'MedicineController@showAnagraph');
 Route::get('/edit/{ma_id}', 'MedicineController@editAnagraph');
 Route::post('/doedit', 'MedicineController@doEditAnagraph');
+
+Route::get('/add', function () {
+    return view('medicine.add');
+});
+
+Route::post('/create', 'MedicineController@createAnagraph');

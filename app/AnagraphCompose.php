@@ -9,4 +9,11 @@ class AnagraphCompose extends Model
     //
     const UPDATED_AT = 'modify_time';
     const CREATED_AT = 'create_time';
+
+    protected $fillable = [
+        'ma_id',
+        'mm_id',
+        'dosage',
+        'usage',
+    ];
 }
