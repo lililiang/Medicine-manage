@@ -9,14 +9,30 @@
             <h3>{{ $anagraph['anagraph_origin'] }}</h3>
             <h5>{{ $anagraph['create_time'] }}</h5>
             <hr>
-            @foreach ($anagraph['consist'] as $post)
-                <p>
-                    {{ $post['medicine_name'] }}
-                    {{ $post['dosage'] }}
-                    {{ $post['usage'] }}
-                </p>
-            @endforeach
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>药名</th>
+                        <th>剂量</th>
+                        <th>用法</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($anagraph['consist'] as $post)
+                        <tr>
+                            <th scope="row">{{ $post['mac_id'] }}</th>
+                            <td>{{ $post['medicine_name'] }}</td>
+                            <td>{{ $post['dosage'] }}</td>
+                            <td>{{ $post['usage'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
             <hr>
+            <a class="btn btn-default" href="/edit/{{ $anagraph['ma_id'] }}" role="button">编辑</a>
             <button class="btn btn-primary" onclick="history.go(-1)">
                 « Back
             </button>

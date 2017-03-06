@@ -19,5 +19,7 @@ Route::get('/', function () {
 //     return redirect('/blog');
 // });
 
-Route::get('list', 'MedicineController@list');
-Route::get('list/{ma_id}', 'MedicineController@showAnagraph');
+Route::get('/list', 'MedicineController@list');
+Route::get('/detail/{ma_id}', 'MedicineController@showAnagraph');
+Route::get('/edit/{ma_id}', 'MedicineController@editAnagraph');
+Route::post('/doedit', 'MedicineController@doEditAnagraph');

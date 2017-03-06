@@ -272,6 +272,8 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
     );
 
     public static $classMap = array (
+        'AnagraphComposeSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphComposeSeeder.php',
+        'AnagraphSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSeeder.php',
         'CreateAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122951_create_anagraph_composes_table.php',
         'CreateAnagraphsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122930_create_anagraphs_table.php',
         'CreateMedicamentsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122948_create_medicaments_table.php',
@@ -349,6 +351,7 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
         'Hamcrest\\Type\\IsString' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Type/IsString.php',
         'Hamcrest\\Util' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
         'Hamcrest\\Xml\\HasXPath' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
+        'MedicamentSeeder' => __DIR__ . '/../..' . '/database/seeds/MedicamentSeeder.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
         'PHPUnit\\Framework\\BaseTestListener' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
         'PHPUnit\\Framework\\TestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/ForwardCompatibility/TestCase.php',

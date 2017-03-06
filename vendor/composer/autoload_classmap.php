@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AnagraphComposeSeeder' => $baseDir . '/database/seeds/AnagraphComposeSeeder.php',
+    'AnagraphSeeder' => $baseDir . '/database/seeds/AnagraphSeeder.php',
     'CreateAnagraphComposesTable' => $baseDir . '/database/migrations/2017_03_02_122951_create_anagraph_composes_table.php',
     'CreateAnagraphsTable' => $baseDir . '/database/migrations/2017_03_02_122930_create_anagraphs_table.php',
     'CreateMedicamentsTable' => $baseDir . '/database/migrations/2017_03_02_122948_create_medicaments_table.php',
@@ -83,6 +85,7 @@ return array(
     'Hamcrest\\Type\\IsString' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Type/IsString.php',
     'Hamcrest\\Util' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
     'Hamcrest\\Xml\\HasXPath' => $vendorDir . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
+    'MedicamentSeeder' => $baseDir . '/database/seeds/MedicamentSeeder.php',
     'PHPUnit\\Framework\\Assert' => $vendorDir . '/phpunit/phpunit/src/ForwardCompatibility/Assert.php',
     'PHPUnit\\Framework\\BaseTestListener' => $vendorDir . '/phpunit/phpunit/src/ForwardCompatibility/BaseTestListener.php',
     'PHPUnit\\Framework\\TestCase' => $vendorDir . '/phpunit/phpunit/src/ForwardCompatibility/TestCase.php',

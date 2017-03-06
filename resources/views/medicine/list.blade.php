@@ -11,7 +11,7 @@
             <ul>
             @foreach ($posts as $post)
                 <li>
-                    <a href="/list/{{$post->ma_id}}">{{ $post->anagraph_name }}</a>
+                    <a href="/detail/{{ $post->ma_id }}">{{ $post->anagraph_name }}</a>
                     <em>({{ $post->create_time }})</em>
                     <p>
                         {{ str_limit($post->anagraph_origin) }}
