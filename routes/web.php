@@ -12,21 +12,21 @@
 */
 
 Route::get('/', function () {
-    return redirect('/home');
+    return redirect('home');
 });
 
-Route::get('/list', 'AnagraphController@list');
-Route::get('/detail/{ma_id}', 'AnagraphController@showAnagraph');
-Route::get('/edit/{ma_id}', 'AnagraphController@editAnagraph');
-Route::post('/doedit', 'AnagraphController@doEditAnagraph');
+Route::get('list', 'AnagraphController@list');
+Route::get('detail/{ma_id}', 'AnagraphController@showAnagraph');
+Route::get('edit/{ma_id}', 'AnagraphController@editAnagraph');
+Route::post('doedit', 'AnagraphController@doEditAnagraph');
 
-Route::get('/add', function () {
+Route::get('add', function () {
     return view('anagraph.add');
 });
 
-Route::post('/create', 'AnagraphController@createAnagraph');
+Route::post('create', 'AnagraphController@createAnagraph');
 
-Route::get('/medicines', 'MedicineController@list');
+Route::get('medicines', 'MedicineController@list');
 
 Auth::routes();
-Route::get('/home', 'HomeController@index');
+Route::get('home', 'HomeController@index');

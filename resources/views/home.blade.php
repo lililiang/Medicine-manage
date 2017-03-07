@@ -9,8 +9,8 @@
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
                         <li role="presentation" class="active"><a href="#">首页</a></li>
-                        <li role="presentation"><a href="/list">方剂列表</a></li>
-                        <li role="presentation"><a href="/medicines">药剂列表</a></li>
+                        <li role="presentation"><a href="list">方剂列表</a></li>
+                        <li role="presentation"><a href="medicines">药剂列表</a></li>
                     </ul>
                 </div>
             </div>

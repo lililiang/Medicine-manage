@@ -8,9 +8,9 @@
                 <div class="panel-heading">&nbsp;</div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li role="presentation"><a href="/home">首页</a></li>
-                        <li role="presentation" class="active"><a href="/list">方剂管理</a></li>
-                        <li role="presentation"><a href="/medicines">药剂管理</a></li>
+                        <li role="presentation"><a href="home">首页</a></li>
+                        <li role="presentation" class="active"><a href="list">方剂管理</a></li>
+                        <li role="presentation"><a href="medicines">药剂管理</a></li>
                     </ul>
                 </div>
             </div>
@@ -18,7 +18,7 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="/list?page={{ $posts->currentPage() }}" role="button">
+                    <a class="btn btn-link" href="list?page={{ $posts->currentPage() }}" role="button">
                         {{ config('medicine.title') }}
                     </a>
                 </div>
@@ -42,7 +42,7 @@
                                 <tr>
                                     <th scope="row">{{ $key + 1 }}</th>
                                     <td>
-                                        <a href="/detail/{{ $post->ma_id }}">
+                                        <a href="detail/{{ $post->ma_id }}">
                                             {{ $post->anagraph_name }}
                                         </a>
                                     </td>
