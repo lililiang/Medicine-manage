@@ -8,9 +8,9 @@
                 <div class="panel-heading">&nbsp;</div>
                 <div class="panel-body">
                     <ul class="nav nav-pills nav-stacked">
-                        <li role="presentation"><a href="home">首页</a></li>
-                        <li role="presentation" class="active"><a href="list">方剂管理</a></li>
-                        <li role="presentation"><a href="medicines">药剂管理</a></li>
+                        <li role="presentation"><a href="/home">首页</a></li>
+                        <li role="presentation" class="active"><a href="/list">方剂管理</a></li>
+                        <li role="presentation"><a href="/medicines">药剂管理</a></li>
                     </ul>
                 </div>
             </div>
@@ -18,7 +18,7 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="detail/{{ $anagraph['ma_id'] }}" role="button">
+                    <a class="btn btn-link" href="/detail/{{ $anagraph['ma_id'] }}" role="button">
                         {{ $anagraph['anagraph_name'] }}
                     </a>
                 </div>
@@ -113,7 +113,7 @@
                         }
                         //统一的向后台提交的处理
                         function doSaveData(data){
-                            $.post("doedit", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                            $.post("/doedit", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
                                 // res = $.parseJSON(res);
                                 if (res == '0') {
                                     alert('提交出错，请重新编辑');
