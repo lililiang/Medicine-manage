@@ -14,5 +14,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AnagraphSeeder::class);
         $this->call(AnagraphComposeSeeder::class);
         $this->call(MedicamentSeeder::class);
+        $this->call(DiseaseSeeder::class);
+        $this->call(DiseaseAliasSeeder::class);
     }
 }

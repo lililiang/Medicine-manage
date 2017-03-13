@@ -3,27 +3,27 @@
 @section('content')
 <div class="container">
     <div class="row">
-        @include('anagraph.navbar')
+        @include('disease.navbar')
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <a class="btn btn-link" href="#" role="button">
-                        新增方剂
+                        新增病症
                     </a>
                 </div>
 
                 <div class="panel-body">
                     <form class="pure-form pure-form-aligned js-slidetitlebanners">
                         <div class="form-group">
-                            <label for="anagraph_name" class="col-sm-2 control-label">药方:</label>
+                            <label for="disease_name" class="col-sm-2 control-label">病症:</label>
                             <div class="col-sm-10">
-                                <input name="anagraph_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="" placeholder="药方">
+                                <input name="disease_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="" placeholder="病症">
                             </div>
                         </div>
                         <div class="ml5 mt10 form-group">
-                            <label for="anagraph_origin" class="col-sm-2 control-label">药方来源:</label>
+                            <label for="disease_desc" class="col-sm-2 control-label">病症描述:</label>
                             <div class="col-sm-10">
-                                <input name="anagraph_origin" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="" placeholder="药方来源">
+                                <input name="disease_desc" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="" placeholder="病症描述">
                             </div>
                         </div>
                         <div class="form-group">
@@ -31,25 +31,21 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>药名</th>
-                                        <th>剂量</th>
-                                        <th>用法</th>
+                                        <th>病症别名</th>
                                         <th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="js-slide_one_block">
                                         <th scope="row"></th>
-                                        <td><input name="medicines[][name]" class="" type="text" autocomplete="off" value="" /></td>
-                                        <td><input name="medicines[][dosage]" class="" type="text" autocomplete="off" value="" /></td>
-                                        <td><input name="medicines[][usage]" class="" type="text" autocomplete="off" value="" /></td>
+                                        <td><input name="medicines[][disease_alias]" class="" type="text" autocomplete="off" value="" /></td>
                                         <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-success js-add_slide" type="button" value="增加新药" />
+                            <input class="btn btn-success js-add_slide" type="button" value="增加别名" />
                             <input class="btn btn-primary" type="submit" value="保存" />
                         </div>
                     </form>

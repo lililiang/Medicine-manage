@@ -28,5 +28,13 @@ Route::post('create', 'AnagraphController@createAnagraph');
 
 Route::get('medicines', 'MedicineController@list');
 
+Route::get('diseases', 'DiseaseController@list');
+Route::get('addDisease', function () {
+    return view('disease.add');
+});
+Route::get('diseaseDetail/{md_id}', 'DiseaseController@showDisease');
+Route::get('editDisease/{md_id}', 'DiseaseController@editDisease');
+Route::post('doeditDisease', 'DiseaseController@doEditDisease');
+
 Auth::routes();
 Route::get('home', 'HomeController@index');

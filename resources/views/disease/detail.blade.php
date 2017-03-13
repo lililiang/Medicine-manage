@@ -3,36 +3,41 @@
 @section('content')
 <div class="container">
     <div class="row">
-        @include('medicine.navbar')
+        @include('disease.navbar')
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="/medicines?page={{ $posts->currentPage() }}" role="button">
-                        药剂管理
+                    <a class="btn btn-link" href="/detail/{{ $disease['md_id'] }}" role="button">
+                        {{ $disease['disease_name'] }}
                     </a>
                 </div>
 
                 <div class="panel-body">
+                    <h5>病症: {{ $disease['disease_name'] }}</h5>
+                    <h5>病症描述: {{ $disease['disease_desc'] }}</h5>
+                    <h5>最后修改于 : {{ $disease['modify_time'] }}</h5>
+                    <hr>
+
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>中药名称</th>
-                                <th>最后修改时间</th>
+                                <th>别名</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($posts as $key => $post)
+                            @foreach ($disease['consist'] as $key => $post)
                                 <tr>
                                     <th scope="row">{{ $key + 1 }}</th>
-                                    <td>{{ $post->medicine_name }}</td>
-                                    <td>{{ $post->modify_time }}</td>
-                                </li>
+                                    <td>{{ $post['disease_alias'] }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
+
                     <hr>
-                    {!! $posts->render() !!}
+                    <a class="btn btn-default" href="/edit/{{ $disease['md_id'] }}" role="button">编辑</a>
+                    <a class="btn btn-primary" href="/list?page={{ $disease['page_index'] }}" role="button">« 返回</a>
                 </div>
             </div>
         </div>
