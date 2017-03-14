@@ -93,7 +93,7 @@
                         }
                         //统一的向后台提交的处理
                         function doSaveData(data){
-                            $.post("/doeditDisease", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                            $.post("{{ config('medicine.base_url') }}/doeditDisease", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
                                 // res = $.parseJSON(res);
                                 if (res == '0') {
                                     alert('提交出错，请重新编辑');
