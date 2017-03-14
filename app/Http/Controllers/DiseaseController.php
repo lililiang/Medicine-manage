@@ -23,7 +23,7 @@ class DiseaseController extends Controller
         return view('disease.list', compact('posts'));
     }
 
-    public function showAnagraph($md_id)
+    public function showDisease($md_id)
     {
         $aliases = DiseaseAlias::where('md_id', '=', $md_id)->where('is_del', '=', 0)->get();
         $aliases = $aliases->toArray();
@@ -40,7 +40,7 @@ class DiseaseController extends Controller
         return view('disease.detail', compact('disease'));
     }
 
-    public function editAnagraph($ma_id)
+    public function editDisease($md_id)
     {
         $aliases = DiseaseAlias::where('md_id', '=', $md_id)->where('is_del', '=', 0)->get();
         $aliases = $aliases->toArray();
@@ -50,10 +50,10 @@ class DiseaseController extends Controller
 
         $disease['consist'] = $aliases;
 
-        return view('disease.detail', compact('disease'));
+        return view('disease.edit', compact('disease'));
     }
 
-    public function doEditAnagraph(Request $request)
+    public function doEditDisease(Request $request)
     {
         // 保存的逻辑
         $input_data = $request->get('data');
@@ -120,7 +120,7 @@ class DiseaseController extends Controller
         return '1';
     }
 
-    public function createAnagraph(Request $request)
+    public function createDisease(Request $request)
     {
         // 保存的逻辑
         $input_data = $request->get('data');

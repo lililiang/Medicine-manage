@@ -35,6 +35,7 @@ Route::get('addDisease', function () {
 Route::get('diseaseDetail/{md_id}', 'DiseaseController@showDisease');
 Route::get('editDisease/{md_id}', 'DiseaseController@editDisease');
 Route::post('doeditDisease', 'DiseaseController@doEditDisease');
+Route::post('createDisease', 'DiseaseController@createDisease');
 
 Auth::routes();
 Route::get('home', 'HomeController@index');

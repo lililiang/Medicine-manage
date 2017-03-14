@@ -28,7 +28,11 @@
                             @foreach ($posts as $key => $post)
                                 <tr>
                                     <th scope="row">{{ $key + 1 }}</th>
-                                    <td>{{ $post->disease_name }}</td>
+                                    <td>
+                                        <a href="/diseaseDetail/{{ $post->md_id }}">
+                                            {{ $post->disease_name }}
+                                        </a>
+                                    </td>
                                     <td>{{ $post->disease_desc }}</td>
                                     <td>{{ $post->modify_time }}</td>
                                 </li>

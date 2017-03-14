@@ -16,6 +16,7 @@ class DiseaseSeeder extends Seeder
 
         for ($i=0; $i < 10; $i++) {
             \App\Disease::create([
+                'md_id'        => $i + 1,
                 'disease_name' => 'Disease '.$i,
                 'disease_desc' => '',
                 'create_time'       => date('Y-m-d H:i:s', time()),

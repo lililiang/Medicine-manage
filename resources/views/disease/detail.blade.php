@@ -36,8 +36,8 @@
                     </table>
 
                     <hr>
-                    <a class="btn btn-default" href="/edit/{{ $disease['md_id'] }}" role="button">编辑</a>
-                    <a class="btn btn-primary" href="/list?page={{ $disease['page_index'] }}" role="button">« 返回</a>
+                    <a class="btn btn-default" href="/editDisease/{{ $disease['md_id'] }}" role="button">编辑</a>
+                    <a class="btn btn-primary" href="/diseases?page={{ $disease['page_index'] }}" role="button">« 返回</a>
                 </div>
             </div>
         </div>
