@@ -98,7 +98,7 @@
                                 if (res == '0') {
                                     alert('提交出错，请重新编辑');
                                 }else {
-                                    // setTimeout(self.location=document.referrer,'800');
+                                    setTimeout(self.location=document.referrer,'800');
                                 }
                             });
                         }

@@ -38,7 +38,7 @@
                                 <tbody>
                                     <tr class="js-slide_one_block">
                                         <th scope="row"></th>
-                                        <td><input name="medicines[][disease_alias]" class="" type="text" autocomplete="off" value="" /></td>
+                                        <td><input name="diseases[][disease_alias]" class="" type="text" autocomplete="off" value="" /></td>
                                         <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
                                     </tr>
                                 </tbody>

@@ -44,6 +44,15 @@ class DiseaseController extends Controller
     {
         $aliases = DiseaseAlias::where('md_id', '=', $md_id)->where('is_del', '=', 0)->get();
         $aliases = $aliases->toArray();
+        if (empty($aliases)) {
+            $aliases = [
+                [
+                    'mda_id'        => 0,
+                    'md_id'         => $md_id,
+                    'disease_alias' => '',
+                ],
+            ];
+        }
 
         $disease = Disease::where('md_id', '=', $md_id)->where('is_del', '=', 0)->first();
         $disease = $disease->toArray();
@@ -90,32 +99,34 @@ class DiseaseController extends Controller
 
         foreach ($arr_diseases as $one_disease) {
             $int_mda_id         = isset($one_medicine['mda_id'])? intval($one_medicine['mac_id']) : 0;
-            $str_disease_alias  = $one_disease['disease_alias'];
+            $str_disease_alias  = isset($one_disease['name']) ? $one_disease['name'] : '';
 
+            if ($str_disease_alias != '') {
+                if ($int_mda_id > 0) {
+                    DiseaseAlias::where('mda_id', '=', $int_mda_id)
+                        ->where('is_del', '=', 0)
+                        ->update([
+                            'disease_alias' => $str_disease_alias,
+                        ]);
 
-            if ($int_mda_id > 0) {
-                DiseaseAlias::where('mda_id', '=', $int_mda_id)
-                    ->where('is_del', '=', 0)
-                    ->update([
+                    unset($delete_ids[$int_mda_id]);
+                } else {
+                    // 新增药物组成
+                    DiseaseAlias::create([
+                        'md_id'         => $int_md_id,
                         'disease_alias' => $str_disease_alias,
                     ]);
-
-                unset($delete_ids[$int_mda_id]);
-            } else {
-                // 新增药物组成
-                DiseaseAlias::create([
-                    'md_id'         => $int_md_id,
-                    'disease_alias' => $str_disease_alias,
-                ]);
+                }
             }
-
         }
-        // 软删数据
-        DiseaseAlias::where('ma_id', '=', $int_md_id)
+        if (!empty($delete_ids)) {
+            // 软删数据
+            DiseaseAlias::where('md_id', '=', $int_md_id)
             ->whereIn('mda_id', array_keys($delete_ids))
             ->update([
                 'is_del' => 1,
             ]);
+        }
 
         return '1';
     }
@@ -150,9 +161,9 @@ class DiseaseController extends Controller
         }
 
         foreach ($arr_diseases as $one_disease) {
-            $str_disease_alias  = $one_disease['disease_alias'];
+            $str_disease_alias  = isset($one_disease['disease_alias']) ? $one_disease['disease_alias'] : '';
             // 新增药物组成
-            $obj_res = AnagraphCompose::create([
+            $obj_res = DiseaseAlias::create([
                 'md_id'         => $int_md_id,
                 'disease_alias' => $str_disease_alias,
             ]);
