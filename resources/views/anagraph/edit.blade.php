@@ -7,7 +7,7 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="/detail/{{ $anagraph['ma_id'] }}" role="button">
+                    <a class="btn btn-link" href="{{ config('medicine.base_url') }}/detail/{{ $anagraph['ma_id'] }}" role="button">
                         {{ $anagraph['anagraph_name'] }}
                     </a>
                 </div>
@@ -102,7 +102,7 @@
                         }
                         //统一的向后台提交的处理
                         function doSaveData(data){
-                            $.post("/doedit", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                            $.post("{{ config('medicine.base_url') }}/doedit", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
                                 // res = $.parseJSON(res);
                                 if (res == '0') {
                                     alert('提交出错，请重新编辑');

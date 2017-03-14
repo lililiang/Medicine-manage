@@ -7,7 +7,7 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="/list?page={{ $posts->currentPage() }}" role="button">
+                    <a class="btn btn-link" href="{{ config('medicine.base_url') }}/list?page={{ $posts->currentPage() }}" role="button">
                         {{ config('medicine.title') }}
                     </a>
                 </div>
@@ -15,7 +15,7 @@
                 <div class="panel-body">
                     <!-- <h1>{{ config('medicine.title') }}</h1>
                     <h5>Page {{ $posts->currentPage() }} of {{ $posts->lastPage() }}</h5> -->
-                    <a class="btn btn-primary" href="/add" role="button">新增方剂</a>
+                    <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/add" role="button">新增方剂</a>
                     <hr>
                     <table class="table table-striped">
                         <thead>
@@ -31,7 +31,7 @@
                                 <tr>
                                     <th scope="row">{{ $key + 1 }}</th>
                                     <td>
-                                        <a href="/detail/{{ $post->ma_id }}">
+                                        <a href="{{ config('medicine.base_url') }}/detail/{{ $post->ma_id }}">
                                             {{ $post->anagraph_name }}
                                         </a>
                                     </td>

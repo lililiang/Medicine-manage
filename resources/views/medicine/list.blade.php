@@ -7,7 +7,7 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="/medicines?page={{ $posts->currentPage() }}" role="button">
+                    <a class="btn btn-link" href="{{ config('medicine.base_url') }}/medicines?page={{ $posts->currentPage() }}" role="button">
                         药剂管理
                     </a>
                 </div>
