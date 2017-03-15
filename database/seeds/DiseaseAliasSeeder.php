@@ -17,7 +17,6 @@ class DiseaseAliasSeeder extends Seeder
         for ($i=0; $i < 10; $i++) {
             \App\DiseaseAlias::create([
                 'mda_id'        => $i + 1,
-                'md_id'         => $i + 1,
                 'disease_alias' => 'Disease Alias '.$i,
                 'create_time'   => date('Y-m-d H:i:s', time()),
                 'modify_time'   => date('Y-m-d H:i:s', time())
