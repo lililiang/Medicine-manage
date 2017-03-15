@@ -14,7 +14,7 @@ class CreateTcmSyndromeDiseaseRelationsTable extends Migration
     public function up()
     {
         Schema::create('tcm_syndrome_disease_relations', function (Blueprint $table) {
-            $table->increments('msdr_id');
+            $table->increments('mtsdr_id');
             $table->integer('mts_id');
             $table->integer('md_id');
             $table->tinyInteger('is_del')->default(0);

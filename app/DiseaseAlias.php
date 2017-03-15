@@ -11,7 +11,6 @@ class DiseaseAlias extends Model
     const CREATED_AT = 'create_time';
 
     protected $fillable = [
-        'md_id',
         'disease_alias',
     ];
 }

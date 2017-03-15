@@ -16,5 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->call(MedicamentSeeder::class);
         $this->call(DiseaseSeeder::class);
         $this->call(DiseaseAliasSeeder::class);
+        $this->call(DiseaseAliasRelationSeeder::class);
+        $this->call(TcmSyndromeSeeder::class);
+        $this->call(TcmSyndromeAliasSeeder::class);
+        $this->call(TcmSyndromeAliasRelationSeeder::class);
+        $this->call(TcmSyndromeDiseaseRelationSeeder::class);
     }
 }

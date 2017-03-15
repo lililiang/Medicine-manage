@@ -19,8 +19,8 @@ class DiseaseSeeder extends Seeder
                 'md_id'        => $i + 1,
                 'disease_name' => 'Disease '.$i,
                 'disease_desc' => '',
-                'create_time'       => date('Y-m-d H:i:s', time()),
-                'modify_time'       => date('Y-m-d H:i:s', time())
+                'create_time'  => date('Y-m-d H:i:s', time()),
+                'modify_time'  => date('Y-m-d H:i:s', time())
             ]);
         }
     }

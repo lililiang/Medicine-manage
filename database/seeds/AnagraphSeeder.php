@@ -16,6 +16,7 @@ class AnagraphSeeder extends Seeder
 
         for ($i=0; $i < 10; $i++) {
             \App\Anagraph::create([
+                'ma_id'             => $i + 1,
                 'anagraph_name'     => 'Anagraph '.$i,
                 'anagraph_origin'   => '伤寒杂病论',
                 'indexs'            => '[1,2]',

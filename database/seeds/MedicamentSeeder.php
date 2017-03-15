@@ -16,9 +16,10 @@ class MedicamentSeeder extends Seeder
 
          for ($i=0; $i < 10; $i++) {
              \App\Medicament::create([
-                 'medicine_name' => 'Medicine '.$i,
-                 'create_time'   => date('Y-m-d H:i:s', time()),
-                 'modify_time'   => date('Y-m-d H:i:s', time())
+                 'mm_id'            => $i + 1,
+                 'medicine_name'    => 'Medicine '.$i,
+                 'create_time'      => date('Y-m-d H:i:s', time()),
+                 'modify_time'      => date('Y-m-d H:i:s', time())
              ]);
          }
      }
