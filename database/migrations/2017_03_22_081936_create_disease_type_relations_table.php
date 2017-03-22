@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTcmSyndromeDiseaseRelationsTable extends Migration
+class CreateDiseaseTypeRelationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateTcmSyndromeDiseaseRelationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tcm_syndrome_disease_relations', function (Blueprint $table) {
-            $table->increments('mtsdr_id');
+        Schema::create('disease_type_relations', function (Blueprint $table) {
+            $table->increments('mdtr_id');
             $table->integer('md_id');
-            $table->integer('mts_id');
+            $table->integer('mdt_id');
             $table->tinyInteger('is_del')->default(0);
         });
     }
@@ -28,6 +28,6 @@ class CreateTcmSyndromeDiseaseRelationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tcm_syndrome_disease_relations');
+        Schema::dropIfExists('disease_type_relations');
     }
 }
