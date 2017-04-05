@@ -28,30 +28,62 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>别名</th>
-                                        <th>操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($disease['consist'] as $key => $post)
-                                        <tr class="js-slide_one_block">
-                                            <th scope="row">
-                                                <input name='diseases[{{ $key }}][mda_id]' type="hidden" class="form-control" value="{{ $post['mda_id'] }}" />
-                                                <input name='diseases[{{ $key }}][md_id]' type="hidden" class="form-control" value="{{ $post['md_id'] }}" />
-                                            </th>
-                                            <td><input name='diseases[{{ $key }}][name]' class="" type="text" autocomplete="off" value="{{ $post['disease_alias'] }}" /></td>
-                                            <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
+                            @if (isset($disease['alias']))
+                                <input name='type' type="hidden" class="form-control" value="alias" />
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>别名</th>
+                                            <th>操作</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($disease['alias'] as $key => $post)
+                                            <tr class="js-slide_one_block">
+                                                <th scope="row">
+                                                    <input name='diseases[{{ $key }}][mda_id]' type="hidden" class="form-control" value="{{ $post['mda_id'] }}" />
+                                                </th>
+                                                <td><input name='diseases[{{ $key }}][name]' class="" type="text" autocomplete="off" value="{{ $post['disease_alias'] }}" /></td>
+                                                <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @elseif (isset($disease['syndromes']))
+                                <input name='type' type="hidden" class="form-control" value="syndrome" />
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>证候名称</th>
+                                            <th>证候描述</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($disease['syndromes'] as $key => $post)
+                                            <tr class="js-slide_one_block">
+                                                <th scope="row">
+                                                    <input name='diseases[{{ $key }}][mts_id]' type="hidden" class="form-control" value="{{ $post['mts_id'] }}" />
+                                                </th>
+                                                <td>
+                                                    <input name='diseases[{{ $key }}][name]' class="" type="text" autocomplete="off" value="{{ $post['syndrome_name'] }}" />
+                                                </td>
+                                                <td>
+                                                    <input name='diseases[{{ $key }}][desc]' class="" type="text" autocomplete="off" value="{{ $post['syndrome_desc'] }}" />
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger js-del_slide" onclick="">删除</button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endif
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-success js-add_slide" type="button" value="增加别名" />
+                            <input class="btn btn-success js-add_slide" type="button" value="增加" />
                             <input class="btn btn-primary" type="submit" value="保存" />
                         </div>
                     </form>
@@ -93,14 +125,25 @@
                         }
                         //统一的向后台提交的处理
                         function doSaveData(data){
-                            $.post("{{ config('medicine.base_url') }}/doeditDisease", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
-                                // res = $.parseJSON(res);
-                                if (res == '0') {
-                                    alert('提交出错，请重新编辑');
-                                }else {
-                                    setTimeout(self.location=document.referrer,'800');
-                                }
-                            });
+                            if (data.type == 'syndrome') {
+                                $.post("{{ config('medicine.base_url') }}/doeditDiseaseSyndromes", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                                    res = $.parseJSON(res);
+                                    if (res == '0') {
+                                        alert('提交出错，请重新编辑');
+                                    }else {
+                                        setTimeout(self.location=document.referrer,'800');
+                                    }
+                                });
+                            } else {
+                                $.post("{{ config('medicine.base_url') }}/doeditDiseaseAlias", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                                    // res = $.parseJSON(res);
+                                    if (res == '0') {
+                                        alert('提交出错，请重新编辑');
+                                    }else {
+                                        setTimeout(self.location=document.referrer,'800');
+                                    }
+                                });
+                            }
                         }
                     </script>
                 </div>

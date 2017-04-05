@@ -9,8 +9,10 @@ class TcmSyndromeDiseaseRelation extends Model
     //
     const CREATED_AT = 'create_time';
     const UPDATED_AT = 'modify_time';
-    
+
     public $timestamps = false;
+
+    protected $primaryKey = 'mtsdr_id';
 
     protected $fillable = [
         'mts_id',

@@ -33,8 +33,10 @@ Route::get('addDisease', function () {
     return view('disease.add');
 });
 Route::get('diseaseDetail/{md_id}', 'DiseaseController@showDisease');
-Route::get('editDisease/{md_id}', 'DiseaseController@editDisease');
-Route::post('doeditDisease', 'DiseaseController@doEditDisease');
+Route::get('editDiseaseAlias/{md_id}', 'DiseaseController@editDiseaseAlias');
+Route::post('doeditDiseaseAlias', 'DiseaseController@doEditDiseaseAlias');
+Route::get('editDiseaseSyndromes/{md_id}', 'DiseaseController@editDiseaseSyndromes');
+Route::post('doeditDiseaseSyndromes', 'DiseaseController@doEditDiseaseSyndromes');
 Route::post('createDisease', 'DiseaseController@createDisease');
 
 Auth::routes();

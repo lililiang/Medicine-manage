@@ -19,8 +19,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>病症名称</th>
-                                <th>病症描述</th>
+                                <th>症状名称</th>
+                                <th>症状描述</th>
+                                <th>证候归类</th>
                                 <th>最后修改时间</th>
                             </tr>
                         </thead>
@@ -34,6 +35,7 @@
                                         </a>
                                     </td>
                                     <td>{{ $post->disease_desc }}</td>
+                                    <td>{{ $post->syndromes }}</td>
                                     <td>{{ $post->modify_time }}</td>
                                 </li>
                             @endforeach

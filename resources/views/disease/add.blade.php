@@ -36,16 +36,41 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="js-slide_one_block">
+                                    <tr class="js-slide_alias_block">
                                         <th scope="row"></th>
-                                        <td><input name="diseases[][disease_alias]" class="" type="text" autocomplete="off" value="" /></td>
-                                        <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
+                                        <td><input name="alias[][disease_alias]" class="" type="text" autocomplete="off" value="" /></td>
+                                        <td><button class="btn btn-danger js-del_alias" onclick="">删除</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>证候名称</th>
+                                        <th>证候描述</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="js-slide_syndrome_block">
+                                        <th scope="row"></th>
+                                        <td>
+                                            <input name='syndrome[][name]' class="" type="text" autocomplete="off" value="" />
+                                        </td>
+                                        <td>
+                                            <input name='syndrome[][desc]' class="" type="text" autocomplete="off" value="" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger js-del_syndrome" onclick="">删除</button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="form-group">
-                            <input class="btn btn-success js-add_slide" type="button" value="增加别名" />
+                            <input class="btn btn-success js-add_alias" type="button" value="增加别名" />
+                            <input class="btn btn-success js-add_syndrome" type="button" value="增加证候" />
                             <input class="btn btn-primary" type="submit" value="保存" />
                         </div>
                     </form>
@@ -57,9 +82,9 @@
 
                         function bindslides(){
                             //全局的增加和删除的绑定
-                            $('.js-add_slide').on('click', function(e){
+                            $('.js-add_alias').on('click', function(e){
                                 e.preventDefault();
-                                var block = $(this).parents('form').find('.js-slide_one_block');
+                                var block = $(this).parents('form').find('.js-slide_alias_block');
                                 var tpl_dom = block.first().clone(true);
                                 //数据置空
                                 tpl_dom.find('input[type=text]').val('');
@@ -69,10 +94,31 @@
                                 });
                                 tpl_dom.insertAfter(block.last());
                             });
-                            $('.js-del_slide').on('click',function(e){
+                            $('.js-add_syndrome').on('click', function(e){
+                                e.preventDefault();
+                                var block = $(this).parents('form').find('.js-slide_syndrome_block');
+                                var tpl_dom = block.first().clone(true);
+                                //数据置空
+                                tpl_dom.find('input[type=text]').val('');
+                                //更新index相关
+                                tpl_dom.find('input[type=text]').each(function(){
+                                    $(this).attr('name',$(this).attr('name').replace('[0]','['+block.length+']'));
+                                });
+                                tpl_dom.insertAfter(block.last());
+                            });
+                            $('.js-del_alias').on('click',function(e){
                                 e.preventDefault();
 
-                                if ($(this).parents('form').find('.js-slide_one_block').length > 1){
+                                if ($(this).parents('form').find('.js-slide_alias_block').length > 1){
+                                    $(this).parent().parent().remove();
+                                }else{
+                                    alert("至少要有一条数据!");
+                                }
+                            });
+                            $('.js-del_syndrome').on('click',function(e){
+                                e.preventDefault();
+
+                                if ($(this).parents('form').find('.js-slide_syndrome_block').length > 1){
                                     $(this).parent().parent().remove();
                                 }else{
                                     alert("至少要有一条数据!");
@@ -94,11 +140,11 @@
                         function doSaveData(data){
                             $.post("{{ config('medicine.base_url') }}/createDisease", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
                                 // res = $.parseJSON(res);
-                                if (res == '0') {
-                                    alert('提交出错，请重新编辑');
-                                }else {
-                                    setTimeout(self.location=document.referrer,'800');
-                                }
+                                // if (res == '0') {
+                                //     alert('提交出错，请重新编辑');
+                                // }else {
+                                //     setTimeout(self.location=document.referrer,'800');
+                                // }
                             });
                         }
                     </script>
