@@ -43,7 +43,10 @@ Route::get('syndromes', 'SyndromeController@list');
 Route::get('addSyndrome', function () {
     return view('syndrome.add');
 });
-
+Route::get('syndromeDetail/{mts_id}', 'SyndromeController@showSyndrome');
+Route::get('editSyndromeAlias/{mts_id}', 'SyndromeController@editSyndromeAlias');
+Route::post('doeditSyndromeAlias', 'SyndromeController@doEditSyndromeAlias');
+Route::post('createSyndrome', 'SyndromeController@createSyndrome');
 Route::post('deleteSyndrome', 'SyndromeController@deleteSyndrome');
 
 Auth::routes();

@@ -13,8 +13,7 @@ class TcmSyndromeAlias extends Model
     protected $primaryKey = 'mtsa_id';
 
     protected $fillable = [
-        'md_id',
-        'mda_id',
+        'syndrome_alias',
     ];
 
     public function syndrome()
