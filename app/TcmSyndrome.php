@@ -19,6 +19,10 @@ class TcmSyndrome extends Model
 
     public function disease()
     {
-        return $this->belongsToMany('App\Disease', 'diseases', 'mts_id', 'md_id');
+        return $this->belongsToMany('App\Disease', 'tcm_syndrome_disease_relations', 'mts_id', 'md_id');
+    }
+
+    public function alias() {
+        return $this->belongsToMany('App\TcmSyndromeAlias', 'tcm_syndrome_alias_relations', 'mts_id', 'mtsa_id');
     }
 }

@@ -18,6 +18,6 @@ class DiseaseAlias extends Model
 
     public function disease()
     {
-        return $this->belongsToMany('App\Disease', 'diseases', 'mda_id', 'md_id');
+        return $this->belongsToMany('App\Disease', 'disease_alias_relations', 'mda_id', 'md_id');
     }
 }

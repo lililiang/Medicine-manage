@@ -39,5 +39,8 @@ Route::get('editDiseaseSyndromes/{md_id}', 'DiseaseController@editDiseaseSyndrom
 Route::post('doeditDiseaseSyndromes', 'DiseaseController@doEditDiseaseSyndromes');
 Route::post('createDisease', 'DiseaseController@createDisease');
 
+Route::get('syndromes', 'SyndromeController@list');
+Route::post('deleteSyndrome', 'SyndromeController@deleteSyndrome');
+
 Auth::routes();
 Route::get('home', 'HomeController@index');
