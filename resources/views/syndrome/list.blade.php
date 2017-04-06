@@ -3,19 +3,19 @@
 @section('content')
 <div class="container">
     <div class="row">
-        @include('anagraph.navbar')
+        @include('syndrome.navbar')
         <div class="col-md-8 col-md-offset-1">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="btn btn-link" href="{{ config('medicine.base_url') }}/list?page={{ $posts->currentPage() }}" role="button">
-                        {{ config('medicine.title') }}
+                    <a class="btn btn-link" href="{{ config('medicine.base_url') }}/syndromes?page={{ $posts->currentPage() }}" role="button">
+                        证候管理
                     </a>
                 </div>
 
                 <div class="panel-body">
                     <!-- <h1>{{ config('medicine.title') }}</h1>
                     <h5>Page {{ $posts->currentPage() }} of {{ $posts->lastPage() }}</h5> -->
-                    <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/add" role="button">新增方剂</a>
+                    <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/addSyndrome" role="button">新增证候</a>
                     <hr>
                     <table class="table table-striped">
                         <thead>

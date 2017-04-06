@@ -40,6 +40,10 @@ Route::post('doeditDiseaseSyndromes', 'DiseaseController@doEditDiseaseSyndromes'
 Route::post('createDisease', 'DiseaseController@createDisease');
 
 Route::get('syndromes', 'SyndromeController@list');
+Route::get('addSyndrome', function () {
+    return view('syndrome.add');
+});
+
 Route::post('deleteSyndrome', 'SyndromeController@deleteSyndrome');
 
 Auth::routes();
