@@ -25,6 +25,7 @@ Route::get('add', function () {
 });
 
 Route::post('create', 'AnagraphController@createAnagraph');
+Route::post('calculate', 'AnagraphController@calculateSimilarity');
 
 Route::get('medicines', 'MedicineController@list');
 

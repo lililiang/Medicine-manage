@@ -274,7 +274,9 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
     public static $classMap = array (
         'AnagraphComposeSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphComposeSeeder.php',
         'AnagraphSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSeeder.php',
+        'AnagraphSimilaritySeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSimilaritySeeder.php',
         'CreateAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122951_create_anagraph_composes_table.php',
+        'CreateAnagraphSimilaritiesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_07_001352_create_anagraph_similarities_table.php',
         'CreateAnagraphsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122930_create_anagraphs_table.php',
         'CreateDiseaseAliasRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_15_031216_create_disease_alias_relations_table.php',
         'CreateDiseaseAliasesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_13_010905_create_disease_aliases_table.php',

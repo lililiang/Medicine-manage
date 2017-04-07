@@ -38,6 +38,30 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <hr>
+                    <h3>相似方剂</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>方剂</th>
+                                <th>相似度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($anagraph['similarities'] as $key => $post)
+                                <tr>
+                                    <th scope="row">{{ $key + 1 }}</th>
+                                    <td>
+                                        <a class="btn btn-link" href="{{ config('medicine.base_url') }}/detail/{{ $post['des_id'] }}" role="button">
+                                            {{ $post['anagraph_name'] }}
+                                        </a>
+                                    </td>
+                                    <td>{{ $post['similarity'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
 
                     <hr>
                     <a class="btn btn-default" href="{{ config('medicine.base_url') }}/edit/{{ $anagraph['ma_id'] }}" role="button">编辑</a>

@@ -8,7 +8,9 @@ $baseDir = dirname($vendorDir);
 return array(
     'AnagraphComposeSeeder' => $baseDir . '/database/seeds/AnagraphComposeSeeder.php',
     'AnagraphSeeder' => $baseDir . '/database/seeds/AnagraphSeeder.php',
+    'AnagraphSimilaritySeeder' => $baseDir . '/database/seeds/AnagraphSimilaritySeeder.php',
     'CreateAnagraphComposesTable' => $baseDir . '/database/migrations/2017_03_02_122951_create_anagraph_composes_table.php',
+    'CreateAnagraphSimilaritiesTable' => $baseDir . '/database/migrations/2017_04_07_001352_create_anagraph_similarities_table.php',
     'CreateAnagraphsTable' => $baseDir . '/database/migrations/2017_03_02_122930_create_anagraphs_table.php',
     'CreateDiseaseAliasRelationsTable' => $baseDir . '/database/migrations/2017_03_15_031216_create_disease_alias_relations_table.php',
     'CreateDiseaseAliasesTable' => $baseDir . '/database/migrations/2017_03_13_010905_create_disease_aliases_table.php',

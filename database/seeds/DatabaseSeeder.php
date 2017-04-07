@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(AnagraphSeeder::class);
+        $this->call(AnagraphSimilaritySeeder::class);
         $this->call(AnagraphComposeSeeder::class);
         $this->call(MedicamentSeeder::class);
         $this->call(DiseaseSeeder::class);

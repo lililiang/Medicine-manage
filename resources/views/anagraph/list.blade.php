@@ -16,6 +16,20 @@
                     <!-- <h1>{{ config('medicine.title') }}</h1>
                     <h5>Page {{ $posts->currentPage() }} of {{ $posts->lastPage() }}</h5> -->
                     <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/add" role="button">新增方剂</a>
+                    <button class="btn btn-primary" onclick="calculate()">更新相似度</button>
+                    <script>
+                        //统一的向后台提交的处理
+                        function calculate(){
+                            $.post("{{ config('medicine.base_url') }}/calculate", {'_token':'{{csrf_token()}}'}, function(res){
+                                // res = $.parseJSON(res);
+                                if (res == '0') {
+                                    alert('提交出错，请重新编辑');
+                                }else {
+                                    setTimeout(location.reload(),'800');
+                                }
+                            });
+                        }
+                    </script>
                     <hr>
                     <table class="table table-striped">
                         <thead>

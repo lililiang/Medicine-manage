@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Anagraph;
 use App\AnagraphCompose;
+use App\AnagraphSimilarity;
 use App\Medicament;
 
 class AnagraphController extends Controller
@@ -56,6 +57,32 @@ class AnagraphController extends Controller
         $anagraph_count = Anagraph::where('ma_id', '<=', $ma_id)->where('is_del', '=', 0)->count();
         $page_index = ceil($anagraph_count / intval(config('medicine.posts_per_page')));
         $anagraph['page_index'] = $page_index;
+
+        $similarities = AnagraphSimilarity::where('src_id', '=', $ma_id)
+            ->where('is_del', '=', 0)
+            ->orderBy('similarity', 'desc')
+            ->take(5)
+            ->get();
+
+        $ma_ids = [];
+        $similarities = $similarities->toArray();
+        foreach ($similarities as $one) {
+            $ma_ids[] = $one['des_id'];
+        }
+
+        $anagraph_similarities = Anagraph::whereIn('ma_id', $ma_ids)->where('is_del', '=', 0)->get();
+        $anagraph_similarities = $anagraph_similarities->toArray();
+
+        $anagraph_tmp = [];
+        foreach ($anagraph_similarities as $one_sim) {
+            $anagraph_tmp[$one_sim['ma_id']] = $one_sim['anagraph_name'];
+        }
+
+        foreach ($similarities as &$one_similarity) {
+            $one_similarity['anagraph_name'] = $anagraph_tmp[$one_similarity['des_id']];
+        }
+
+        $anagraph['similarities'] = $similarities;
 
         return view('anagraph.detail', compact('anagraph'));
     }
@@ -257,6 +284,66 @@ class AnagraphController extends Controller
 
             if (empty($obj_res)) {
                 return '0';
+            }
+        }
+
+        return '1';
+    }
+
+    public function calculateSimilarity()
+    {
+        $anagraphs = Anagraph::where('is_del', '=', 0)->get();
+        $anagraphs = $anagraphs->toArray();
+
+        $anagraphs_tmp = [];
+        foreach ($anagraphs as $one_ana) {
+            $anagraphs_tmp[intval($one_ana['ma_id'])] = $one_ana['anagraph_name'];
+        }
+
+        $medicines = Medicament::where('is_del', '=', 0)->get();
+        $medicines = $medicines->toArray();
+
+        $medicines_tmp = [];
+        foreach ($medicines as $one_med) {
+            $medicines_tmp[intval($one_med['mm_id'])] = $one_med['medicine_name'];
+        }
+
+        $composes = AnagraphCompose::where('is_del', '=', 0)->get();
+        $composes = $composes->toArray();
+
+        $anagraph_data = [];
+        foreach ($composes as $one_com) {
+            $ma_id = intval($one_com['ma_id']);
+            $mm_id = intval($one_com['mm_id']);
+
+            $anagraph_data[$ma_id][] = $medicines_tmp[$mm_id];
+        }
+
+        foreach ($anagraph_data as &$ana_medicines) {
+            $ana_medicines = array_values(array_unique($ana_medicines));
+        }
+
+        AnagraphSimilarity::where('is_del', '=', 0)->delete();
+
+        $ids = [];
+        foreach ($anagraph_data as $src_id => $src_medicines) {
+            $ids[] = $src_id;
+            foreach ($anagraph_data as $des_id => $des_medicines) {
+                if (!in_array($des_id, $ids)) {
+                    $merge_medicines = array_merge($src_medicines, $des_medicines);
+                    $merge_medicines = array_values(array_unique($merge_medicines));
+
+                    if (!empty($merge_medicines)) {
+                        $intersect_medicines    = array_intersect($src_medicines, $des_medicines);
+                        $jaccard_similarity     = count($intersect_medicines) / count($merge_medicines);
+
+                        AnagraphSimilarity::create([
+                            'src_id'        => $src_id,
+                            'des_id'        => $des_id,
+                            'similarity'    => $jaccard_similarity
+                        ]);
+                    }
+                }
             }
         }
 
