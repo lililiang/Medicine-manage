@@ -6,7 +6,7 @@
                 <li role="presentation" class="active"><a href="#">首页</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/list">方剂列表</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/medicines">药剂列表</a></li>
-                <li role="presentation"><a href="{{ config('medicine.base_url') }}/diseases">病症管理</a></li>
+                <li role="presentation"><a href="{{ config('medicine.base_url') }}/diseases">症状管理</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/syndromes">证候管理</a></li>
             </ul>
         </div>

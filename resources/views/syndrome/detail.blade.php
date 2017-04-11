@@ -13,8 +13,8 @@
                 </div>
 
                 <div class="panel-body">
-                    <h5>病症: {{ $syndrome['syndrome_name'] }}</h5>
-                    <h5>病症描述: {{ $syndrome['syndrome_desc'] }}</h5>
+                    <h5>症状: {{ $syndrome['syndrome_name'] }}</h5>
+                    <h5>症状描述: {{ $syndrome['syndrome_desc'] }}</h5>
                     <h5>最后修改于 : {{ $syndrome['modify_time'] }}</h5>
                     <hr>
 
@@ -38,14 +38,12 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                <div class="panel-footer">
-                                    <a class="btn btn-default" href="{{ config('medicine.base_url') }}/editSyndromeAlias/{{ $syndrome['mts_id'] }}" role="button">编辑</a>
-                                </div>
                             </div>
                         </div>
                     @endif
                 </div>
                 <div class="panel-footer">
+                    <a class="btn btn-default" href="{{ config('medicine.base_url') }}/editSyndromeAlias/{{ $syndrome['mts_id'] }}" role="button">编辑</a>
                     <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/syndromes?page={{ $syndrome['page_index'] }}" role="button">« 返回</a>
                 </div>
             </div>
