@@ -19,8 +19,48 @@ class AnagraphController extends Controller
     public function list()
     {
         $posts = Anagraph::where('is_del', '=', 0)
-        ->orderBy('ma_id')
-        ->paginate(config('medicine.posts_per_page'));
+            ->orderBy('ma_id')
+            ->paginate(config('medicine.posts_per_page'));
+
+        $anagraph_data = $posts->toArray();
+        $anagraph_data = $anagraph_data['data'];
+
+        $ma_ids = [];
+        foreach ($anagraph_data as $one_ana) {
+            $ma_ids[] = $one_ana['ma_id'];
+        }
+
+        $anagraph_composes = AnagraphCompose::whereIn('ma_id', $ma_ids)
+            ->where(function($query){
+                $query->where('standard_dosage', '=', 0)
+                    ->orWhere('need_modify', '=', 1);
+                })
+            ->where('is_del', '=', 0)
+            ->get();
+        $anagraph_composes = $anagraph_composes->toArray();
+
+        $need_dosage_composes = [];
+        $need_modify = [];
+        foreach ($anagraph_composes as $one_com) {
+            if ($one_com['standard_dosage'] == 0) {
+                $need_dosage_composes[$one_com['ma_id']] = 1;
+            }
+
+            if ($one_com['need_modify'] == 1) {
+                $need_modify[$one_com['ma_id']] = 1;
+            }
+        }
+
+        // add syndrome data
+        foreach ($posts->getIterator() as $val) {
+            if (isset($need_dosage_composes[$val->ma_id])) {
+                $val->setAttribute('need_dosage', true);
+            }
+
+            if (isset($need_modify[$val->ma_id])) {
+                $val->setAttribute('need_modify', true);
+            }
+        }
 
         return view('anagraph.list', compact('posts'));
     }
@@ -159,6 +199,7 @@ class AnagraphController extends Controller
             $int_mm_id          = isset($one_medicine['mm_id'])? intval($one_medicine['mm_id']) : 0;
             $str_medicine_name  = $one_medicine['name'];
             $str_dosage         = isset($one_medicine['dosage'])? $one_medicine['dosage'] : '';
+            $standard_dosage    = isset($one_medicine['standard_dosage'])? floatval($one_medicine['standard_dosage']) : 0.0;
             $tmp_usage          = explode(',', strval($one_medicine['usage']));
             $str_usage          = json_encode($tmp_usage);
 
@@ -173,17 +214,19 @@ class AnagraphController extends Controller
                         AnagraphCompose::where('mac_id', '=', $int_mac_id)
                             ->where('is_del', '=', 0)
                             ->update([
-                                'mm_id'     => intval($obj_new_medicine->id),
-                                'dosage'    => $str_dosage,
-                                'usage'     => $str_usage,
+                                'mm_id'             => intval($obj_new_medicine->id),
+                                'dosage'            => $str_dosage,
+                                'standard_dosage'   => $standard_dosage,
+                                'usage'             => $str_usage,
                             ]);
                     } else {
                         // 新增药物组成
                         AnagraphCompose::create([
-                            'ma_id'     => $int_ma_id,
-                            'mm_id'     => intval($obj_new_medicine->id),
-                            'dosage'    => $str_dosage,
-                            'usage'     => $str_usage,
+                            'ma_id'             => $int_ma_id,
+                            'mm_id'             => intval($obj_new_medicine->id),
+                            'dosage'            => $str_dosage,
+                            'standard_dosage'   => $standard_dosage,
+                            'usage'             => $str_usage,
                         ]);
                     }
                 } else {
@@ -191,21 +234,34 @@ class AnagraphController extends Controller
                 }
             } else {
                 $arr_medicine = $obj_medicine->toArray();
-                if ($int_mm_id != $arr_medicine['mm_id']) {
-                    AnagraphCompose::where('mac_id', '=', $int_mac_id)
-                        ->where('is_del', '=', 0)
-                        ->update([
-                            'mm_id'     => $arr_medicine['mm_id'],
-                            'dosage'    => $str_dosage,
-                            'usage'     => $str_usage,
-                        ]);
+                if ($int_mac_id > 0) {
+                    if ($int_mm_id != $arr_medicine['mm_id']) {
+                        AnagraphCompose::where('mac_id', '=', $int_mac_id)
+                            ->where('is_del', '=', 0)
+                            ->update([
+                                'mm_id'             => $arr_medicine['mm_id'],
+                                'dosage'            => $str_dosage,
+                                'standard_dosage'   => $standard_dosage,
+                                'usage'             => $str_usage,
+                            ]);
+                    } else {
+                        AnagraphCompose::where('mac_id', '=', $int_mac_id)
+                            ->where('is_del', '=', 0)
+                            ->update([
+                                'dosage'            => $str_dosage,
+                                'standard_dosage'   => $standard_dosage,
+                                'usage'             => $str_usage,
+                            ]);
+                    }
                 } else {
-                    AnagraphCompose::where('mac_id', '=', $int_mac_id)
-                        ->where('is_del', '=', 0)
-                        ->update([
-                            'dosage'    => $str_dosage,
-                            'usage'     => $str_usage,
-                        ]);
+                    // 新增药物组成
+                    AnagraphCompose::create([
+                        'ma_id'             => $int_ma_id,
+                        'mm_id'             => intval($arr_medicine['mm_id']),
+                        'dosage'            => $str_dosage,
+                        'standard_dosage'   => $standard_dosage,
+                        'usage'             => $str_usage,
+                    ]);
                 }
             }
 
@@ -255,7 +311,8 @@ class AnagraphController extends Controller
 
         foreach ($arr_medicines as $one_medicine) {
             $str_medicine_name  = $one_medicine['name'];
-            $str_dosage         = isset($one_medicine['dosage'])? $one_medicine['dosage'] : '';
+            $str_dosage         = isset($one_medicine['dosage']) ? $one_medicine['dosage'] : '';
+            $standard_dosage    = isset($one_medicine['standard_dosage']) ? floatval($one_medicine['standard_dosage']) : 0.0;
             $tmp_usage          = explode(',', strval($one_medicine['usage']));
             $str_usage          = json_encode($tmp_usage);
 
@@ -276,10 +333,11 @@ class AnagraphController extends Controller
 
             // 新增药物组成
             $obj_res = AnagraphCompose::create([
-                'ma_id'     => $int_ma_id,
-                'mm_id'     => $int_mm_id,
-                'dosage'    => $str_dosage,
-                'usage'     => $str_usage,
+                'ma_id'             => $int_ma_id,
+                'mm_id'             => $int_mm_id,
+                'dosage'            => $str_dosage,
+                'standard_dosage'   => $standard_dosage,
+                'usage'             => $str_usage,
             ]);
 
             if (empty($obj_res)) {

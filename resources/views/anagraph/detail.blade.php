@@ -23,8 +23,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>药名</th>
-                                <th>剂量</th>
+                                <th>古代剂量</th>
+                                <th>现代标准剂量(g)</th>
                                 <th>用法</th>
+                                <th>需要校对</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +35,24 @@
                                     <th scope="row">{{ $key + 1 }}</th>
                                     <td>{{ $post['medicine_name'] }}</td>
                                     <td>{{ $post['dosage'] }}</td>
+                                    <td>
+                                        {{ $post['standard_dosage'] }}
+                                        @if ($post['standard_dosage'] == 0)
+                                            <span class="label label-warning">剂量缺失</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $post['usage'] }}</td>
+                                    <td>
+                                        @if ($post['need_modify'])
+                                            <label>
+                                                <input type="checkbox" checked="checked" disabled="true"> 是
+                                            </label>
+                                        @else
+                                            <label>
+                                                <input type="checkbox" disabled="true"> 否
+                                            </label>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -11,6 +11,6 @@ class Medicament extends Model
     const CREATED_AT = 'create_time';
 
     protected $fillable = [
-        'medicine_name',
+        'medicine_name'
     ];
 }

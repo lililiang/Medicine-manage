@@ -32,7 +32,8 @@
                                     <tr>
                                         <th>#</th>
                                         <th>药名</th>
-                                        <th>剂量</th>
+                                        <th>古代剂量</th>
+                                        <th>现代标准剂量(g)</th>
                                         <th>用法</th>
                                         <th>操作</th>
                                     </tr>
@@ -42,6 +43,7 @@
                                         <th scope="row"></th>
                                         <td><input name="medicines[][name]" class="" type="text" autocomplete="off" value="" /></td>
                                         <td><input name="medicines[][dosage]" class="" type="text" autocomplete="off" value="" /></td>
+                                        <td><input name="medicines[][standard_dosage]" class="" type="text" autocomplete="off" value="" /></td>
                                         <td><input name="medicines[][usage]" class="" type="text" autocomplete="off" value="" /></td>
                                         <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
                                     </tr>

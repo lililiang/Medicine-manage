@@ -272,6 +272,7 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
     );
 
     public static $classMap = array (
+        'AddStandardDosageToAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_12_081846_add_standard_dosage_to_anagraph_composes_table.php',
         'AnagraphComposeSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphComposeSeeder.php',
         'AnagraphSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSeeder.php',
         'AnagraphSimilaritySeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSimilaritySeeder.php',

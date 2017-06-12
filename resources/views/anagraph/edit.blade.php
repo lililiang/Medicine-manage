@@ -33,8 +33,10 @@
                                     <tr>
                                         <th>#</th>
                                         <th>药名</th>
-                                        <th>剂量</th>
+                                        <th>古代剂量</th>
+                                        <th>现代标准剂量(g)</th>
                                         <th>用法</th>
+                                        <th>需要校对</th>
                                         <th>操作</th>
                                     </tr>
                                 </thead>
@@ -47,7 +49,15 @@
                                             </th>
                                             <td><input name="medicines[{{ $key }}][name]" class="" type="text" autocomplete="off" value="{{ $post['medicine_name'] }}" /></td>
                                             <td><input name="medicines[{{ $key }}][dosage]" class="" type="text" autocomplete="off" value="{{ $post['dosage'] }}" /></td>
+                                            <td><input name="medicines[{{ $key }}][standard_dosage]" class="" type="text" autocomplete="off" value="{{ $post['standard_dosage'] }}" /></td>
                                             <td><input name="medicines[{{ $key }}][usage]" class="" type="text" autocomplete="off" value="{{ $post['usage'] }}" /></td>
+                                            <td>
+                                                @if ($post['need_modify'])
+                                                    <input type="checkbox" checked="checked" name="medicines[{{ $key }}][need_modify] ">
+                                                @else
+                                                    <input type="checkbox" name="medicines[{{ $key }}][need_modify]">
+                                                @endif
+                                            </td>
                                             <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
                                         </tr>
                                     @endforeach

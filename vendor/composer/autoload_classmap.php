@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddStandardDosageToAnagraphComposesTable' => $baseDir . '/database/migrations/2017_04_12_081846_add_standard_dosage_to_anagraph_composes_table.php',
     'AnagraphComposeSeeder' => $baseDir . '/database/seeds/AnagraphComposeSeeder.php',
     'AnagraphSeeder' => $baseDir . '/database/seeds/AnagraphSeeder.php',
     'AnagraphSimilaritySeeder' => $baseDir . '/database/seeds/AnagraphSimilaritySeeder.php',

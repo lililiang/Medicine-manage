@@ -48,6 +48,12 @@
                                         <a href="{{ config('medicine.base_url') }}/detail/{{ $post->ma_id }}">
                                             {{ $post->anagraph_name }}
                                         </a>
+                                        @if ($post->need_dosage)
+                                            <span class="label label-warning">剂量数据缺失</span>
+                                        @endif
+                                        @if ($post->need_modify)
+                                            <span class="label label-danger">方剂数据出错</span>
+                                        @endif
                                     </td>
                                     <td>{{ str_limit($post->anagraph_origin) }}</td>
                                     <td>{{ $post->modify_time }}</td>

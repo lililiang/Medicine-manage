@@ -14,6 +14,7 @@ class AnagraphCompose extends Model
         'ma_id',
         'mm_id',
         'dosage',
+        'standard_dosage',
         'usage',
     ];
 }
