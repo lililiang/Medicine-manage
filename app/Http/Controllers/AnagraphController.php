@@ -191,87 +191,96 @@ class AnagraphController extends Controller
 
         $delete_ids = [];
         foreach ($composes as $one_com) {
-            $delete_ids[intval($one_com['mm_id'])] = intval($one_com['mm_id']);
+            $delete_ids[intval($one_com['mac_id'])] = intval($one_com['mac_id']);
         }
 
         foreach ($arr_medicines as $one_medicine) {
-            $int_mac_id         = isset($one_medicine['mac_id'])? intval($one_medicine['mac_id']) : 0;
-            $int_mm_id          = isset($one_medicine['mm_id'])? intval($one_medicine['mm_id']) : 0;
-            $str_medicine_name  = $one_medicine['name'];
-            $str_dosage         = isset($one_medicine['dosage'])? $one_medicine['dosage'] : '';
-            $standard_dosage    = isset($one_medicine['standard_dosage'])? floatval($one_medicine['standard_dosage']) : 0.0;
-            $tmp_usage          = explode(',', strval($one_medicine['usage']));
-            $str_usage          = json_encode($tmp_usage);
+            if (is_array($one_medicine) && count($one_medicine) > 0) {
+                $int_mac_id         = isset($one_medicine['mac_id'])? intval($one_medicine['mac_id']) : 0;
+                $int_mm_id          = isset($one_medicine['mm_id'])? intval($one_medicine['mm_id']) : 0;
+                $str_medicine_name  = $one_medicine['name'];
+                $str_dosage         = isset($one_medicine['dosage'])? $one_medicine['dosage'] : '';
+                $standard_dosage    = isset($one_medicine['standard_dosage'])? floatval($one_medicine['standard_dosage']) : 0.0;
+                $tmp_usage          = explode(',', strval($one_medicine['usage']));
+                $str_usage          = json_encode($tmp_usage);
+                $int_need_modify    = isset($one_medicine['need_modify'])? $one_medicine['need_modify'] : 0;
 
-            $obj_medicine = Medicament::where('medicine_name', '=', $str_medicine_name)
-                ->where('is_del', '=', 0)
-                ->first();
-            if (empty($obj_medicine)) {
-                // 新增药物
-                $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
-                if (isset($obj_new_medicine->id)) {
-                    if ($int_mac_id > 0) {
-                        AnagraphCompose::where('mac_id', '=', $int_mac_id)
-                            ->where('is_del', '=', 0)
-                            ->update([
+                $obj_medicine = Medicament::where('medicine_name', '=', $str_medicine_name)
+                    ->where('is_del', '=', 0)
+                    ->first();
+                if (empty($obj_medicine)) {
+                    // 新增药物
+                    $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
+                    if (isset($obj_new_medicine->id)) {
+                        if ($int_mac_id > 0) {
+                            AnagraphCompose::where('mac_id', '=', $int_mac_id)
+                                ->where('is_del', '=', 0)
+                                ->update([
+                                    'mm_id'             => intval($obj_new_medicine->id),
+                                    'dosage'            => $str_dosage,
+                                    'standard_dosage'   => $standard_dosage,
+                                    'usage'             => $str_usage,
+                                    'need_modify'       => $int_need_modify
+                                ]);
+                        } else {
+                            // 新增药物组成
+                            AnagraphCompose::create([
+                                'ma_id'             => $int_ma_id,
                                 'mm_id'             => intval($obj_new_medicine->id),
                                 'dosage'            => $str_dosage,
                                 'standard_dosage'   => $standard_dosage,
                                 'usage'             => $str_usage,
+                                'need_modify'       => $int_need_modify
                             ]);
+                        }
+                    } else {
+                        return '0';
+                    }
+                } else {
+                    $arr_medicine = $obj_medicine->toArray();
+                    if ($int_mac_id > 0) {
+                        if ($int_mm_id != $arr_medicine['mm_id']) {
+                            AnagraphCompose::where('mac_id', '=', $int_mac_id)
+                                ->where('is_del', '=', 0)
+                                ->update([
+                                    'mm_id'             => $arr_medicine['mm_id'],
+                                    'dosage'            => $str_dosage,
+                                    'standard_dosage'   => $standard_dosage,
+                                    'usage'             => $str_usage,
+                                    'need_modify'       => $int_need_modify
+                                ]);
+                        } else {
+                            AnagraphCompose::where('mac_id', '=', $int_mac_id)
+                                ->where('is_del', '=', 0)
+                                ->update([
+                                    'dosage'            => $str_dosage,
+                                    'standard_dosage'   => $standard_dosage,
+                                    'usage'             => $str_usage,
+                                    'need_modify'       => $int_need_modify
+                                ]);
+                        }
                     } else {
                         // 新增药物组成
                         AnagraphCompose::create([
                             'ma_id'             => $int_ma_id,
-                            'mm_id'             => intval($obj_new_medicine->id),
+                            'mm_id'             => intval($arr_medicine['mm_id']),
                             'dosage'            => $str_dosage,
                             'standard_dosage'   => $standard_dosage,
                             'usage'             => $str_usage,
+                            'need_modify'       => $int_need_modify
                         ]);
                     }
-                } else {
-                    return '0';
                 }
-            } else {
-                $arr_medicine = $obj_medicine->toArray();
-                if ($int_mac_id > 0) {
-                    if ($int_mm_id != $arr_medicine['mm_id']) {
-                        AnagraphCompose::where('mac_id', '=', $int_mac_id)
-                            ->where('is_del', '=', 0)
-                            ->update([
-                                'mm_id'             => $arr_medicine['mm_id'],
-                                'dosage'            => $str_dosage,
-                                'standard_dosage'   => $standard_dosage,
-                                'usage'             => $str_usage,
-                            ]);
-                    } else {
-                        AnagraphCompose::where('mac_id', '=', $int_mac_id)
-                            ->where('is_del', '=', 0)
-                            ->update([
-                                'dosage'            => $str_dosage,
-                                'standard_dosage'   => $standard_dosage,
-                                'usage'             => $str_usage,
-                            ]);
-                    }
-                } else {
-                    // 新增药物组成
-                    AnagraphCompose::create([
-                        'ma_id'             => $int_ma_id,
-                        'mm_id'             => intval($arr_medicine['mm_id']),
-                        'dosage'            => $str_dosage,
-                        'standard_dosage'   => $standard_dosage,
-                        'usage'             => $str_usage,
-                    ]);
-                }
-            }
 
-            if ($int_mm_id > 0) {
-                unset($delete_ids[$int_mm_id]);
+                if ($int_mac_id > 0) {
+                    unset($delete_ids[$int_mac_id]);
+                }
             }
         }
+
         // 软删数据
         AnagraphCompose::where('ma_id', '=', $int_ma_id)
-            ->whereIn('mm_id', array_keys($delete_ids))
+            ->whereIn('mac_id', array_keys($delete_ids))
             ->update([
                 'is_del' => 1,
             ]);

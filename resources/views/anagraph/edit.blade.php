@@ -52,11 +52,7 @@
                                             <td><input name="medicines[{{ $key }}][standard_dosage]" class="" type="text" autocomplete="off" value="{{ $post['standard_dosage'] }}" /></td>
                                             <td><input name="medicines[{{ $key }}][usage]" class="" type="text" autocomplete="off" value="{{ $post['usage'] }}" /></td>
                                             <td>
-                                                @if ($post['need_modify'])
-                                                    <input type="checkbox" checked="checked" name="medicines[{{ $key }}][need_modify] ">
-                                                @else
-                                                    <input type="checkbox" name="medicines[{{ $key }}][need_modify]">
-                                                @endif
+                                                <input type="checkbox" <?php if ($post['need_modify']) {echo 'checked';}?> name="medicines[{{ $key }}][need_modify]" value="1" />
                                             </td>
                                             <td><button class="btn btn-danger js-del_slide" onclick="">删除</button></td>
                                         </tr>

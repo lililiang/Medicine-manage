@@ -45,11 +45,11 @@
                                     <td>
                                         @if ($post['need_modify'])
                                             <label>
-                                                <input type="checkbox" checked="checked" disabled="true"> 是
+                                                <input type="checkbox" checked="checked" disabled="true">
                                             </label>
                                         @else
                                             <label>
-                                                <input type="checkbox" disabled="true"> 否
+                                                <input type="checkbox" disabled="true">
                                             </label>
                                         @endif
                                     </td>
