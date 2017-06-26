@@ -254,6 +254,21 @@ class Router implements RegistrarContract, BindingRegistrar
     }
 
     /**
+     * Route an api resource to a controller.
+     *
+     * @param  string  $name
+     * @param  string  $controller
+     * @param  array  $options
+     * @return void
+     */
+    public function apiResource($name, $controller, array $options = [])
+    {
+        $this->resource($name, $controller, array_merge([
+            'only' => ['index', 'show', 'store', 'update', 'destroy'],
+        ], $options));
+    }
+
+    /**
      * Create a route group with shared attributes.
      *
      * @param  array  $attributes
@@ -940,7 +955,7 @@ class Router implements RegistrarContract, BindingRegistrar
      */
     public function currentRouteNamed($name)
     {
-        return $this->current() ? $this->current()->getName() == $name : false;
+        return $this->current() ? $this->current()->named($name) : false;
     }
 
     /**
@@ -999,14 +1014,14 @@ class Router implements RegistrarContract, BindingRegistrar
         $this->post('logout', 'Auth\LoginController@logout')->name('logout');
 
         // Registration Routes...
-        // $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-        // $this->post('register', 'Auth\RegisterController@register');
+        $this->get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+        $this->post('register', 'Auth\RegisterController@register');
 
         // Password Reset Routes...
-        // $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
-        // $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
-        // $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
-        // $this->post('password/reset', 'Auth\ResetPasswordController@reset');
+        $this->get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
+        $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+        $this->get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
+        $this->post('password/reset', 'Auth\ResetPasswordController@reset');
     }
 
     /**

@@ -8,8 +8,8 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
@@ -82,6 +82,9 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
         array (
             'Dotenv\\' => 7,
             'Doctrine\\Instantiator\\' => 22,
+            'Doctrine\\Common\\Cache\\' => 22,
+            'Doctrine\\Common\\Annotations\\' => 28,
+            'Doctrine\\Common\\' => 16,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -214,6 +217,18 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
+        'Doctrine\\Common\\Cache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
+        ),
+        'Doctrine\\Common\\Annotations\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
+        ),
+        'Doctrine\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+        ),
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
@@ -264,27 +279,47 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
         ),
         'D' => 
         array (
+            'Doctrine\\DBAL\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/dbal/lib',
+            ),
+            'Doctrine\\Common\\Lexer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
+            ),
             'Doctrine\\Common\\Inflector\\' => 
             array (
                 0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
+            ),
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
             ),
         ),
     );
 
     public static $classMap = array (
+        'AddModifyStatusToAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_12_030908_add_modify_status_to_anagraph_composes_table.php',
+        'AddModifyStatusToMedicaments' => __DIR__ . '/../..' . '/database/migrations/2017_06_12_025158_add_modify_status_to_medicaments.php',
         'AddStandardDosageToAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_12_081846_add_standard_dosage_to_anagraph_composes_table.php',
+        'AddUniqueToMedicineAnagraphSourceRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_122845_add_unique_to_medicine_anagraph_source_relations_table.php',
+        'AddUniqueToMedicineMedicamentSourceRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_122321_add_unique_to_medicine_medicament_source_relations_table.php',
+        'AlterAliasToMedicineDataSourcesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_082210_alter_alias_to_medicine_data_sources_table.php',
         'AnagraphComposeSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphComposeSeeder.php',
         'AnagraphSeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSeeder.php',
         'AnagraphSimilaritySeeder' => __DIR__ . '/../..' . '/database/seeds/AnagraphSimilaritySeeder.php',
         'CreateAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122951_create_anagraph_composes_table.php',
         'CreateAnagraphSimilaritiesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_07_001352_create_anagraph_similarities_table.php',
+        'CreateAnagraphSourceRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_115045_create_anagraph_source_relations_table.php',
         'CreateAnagraphsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122930_create_anagraphs_table.php',
         'CreateDiseaseAliasRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_15_031216_create_disease_alias_relations_table.php',
         'CreateDiseaseAliasesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_13_010905_create_disease_aliases_table.php',
         'CreateDiseaseTypeRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_22_081936_create_disease_type_relations_table.php',
         'CreateDiseaseTypesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_22_070243_create_disease_types_table.php',
         'CreateDiseasesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_13_010853_create_diseases_table.php',
+        'CreateMedicamentSourceRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_115033_create_medicament_source_relations_table.php',
         'CreateMedicamentsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_02_122948_create_medicaments_table.php',
+        'CreateMedicineDataSourcesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_19_065929_create_medicine_data_sources_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreateTcmSyndromeAliasRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_15_031848_create_tcm_syndrome_alias_relations_table.php',
         'CreateTcmSyndromeAliasesTable' => __DIR__ . '/../..' . '/database/migrations/2017_03_15_031837_create_tcm_syndrome_aliases_table.php',
@@ -297,6 +332,7 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
         'DiseaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DiseaseSeeder.php',
         'DiseaseTypeRelationSeeder' => __DIR__ . '/../..' . '/database/seeds/DiseaseTypeRelationSeeder.php',
         'DiseaseTypeSeeder' => __DIR__ . '/../..' . '/database/seeds/DiseaseTypeSeeder.php',
+        'DropModifyStatusToMedicaments' => __DIR__ . '/../..' . '/database/migrations/2017_06_12_030753_drop_modify_status_to_medicaments.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',

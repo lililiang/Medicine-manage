@@ -33,7 +33,11 @@
                             @foreach ($anagraph['consist'] as $key => $post)
                                 <tr>
                                     <th scope="row">{{ $key + 1 }}</th>
-                                    <td>{{ $post['medicine_name'] }}</td>
+                                    <td>
+                                        <a href="{{ config('medicine.base_url') }}/medicineDetail/{{ $post['mm_id'] }}">
+                                            {{ $post['medicine_name'] }}
+                                        </a>
+                                    </td>
                                     <td>{{ $post['dosage'] }}</td>
                                     <td>
                                         {{ $post['standard_dosage'] }}
@@ -58,6 +62,32 @@
                         </tbody>
                     </table>
                     <hr>
+                    @if (!empty($anagraph['anagraph_source']))
+                        <h3>方剂源数据</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>方剂</th>
+                                    <th>组成</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($anagraph['anagraph_source'] as $key => $one_source_ana)
+                                    <tr>
+                                        <th scope="row">{{ $key + 1 }}</th>
+                                        <td>
+                                            <a class="btn btn-link" href="{{ config('medicine.base_url') }}/prescriptionDetail/{{ $one_source_ana['mp_id'] }}" role="button">
+                                                {{ $one_source_ana['name'] }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $one_source_ana['components'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <hr>
+                    @endif
                     <h3>相似方剂</h3>
                     <table class="table table-striped">
                         <thead>

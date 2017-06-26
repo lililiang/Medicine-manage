@@ -4,10 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Redirect;
 use App\Anagraph;
+use App\Disease;
 use App\AnagraphCompose;
+use App\AnagraphSourceRelation;
 use App\AnagraphSimilarity;
 use App\Medicament;
+use App\MedicineDataSource;
+use App\PrescriptionDataSource;
 
 class AnagraphController extends Controller
 {
@@ -51,6 +57,16 @@ class AnagraphController extends Controller
             }
         }
 
+        $anagraph_source_data = AnagraphSourceRelation::whereIn('ma_id', $ma_ids)->get();
+        $anagraph_source_data = $anagraph_source_data->toArray();
+
+        $need_source = [];
+        foreach ($anagraph_source_data as $one_source) {
+            if (isset($one_source['ma_id']) && isset($one_source['mp_id'])) {
+                $need_source[$one_source['ma_id']] = $one_source['mp_id'];
+            }
+        }
+
         // add syndrome data
         foreach ($posts->getIterator() as $val) {
             if (isset($need_dosage_composes[$val->ma_id])) {
@@ -59,6 +75,10 @@ class AnagraphController extends Controller
 
             if (isset($need_modify[$val->ma_id])) {
                 $val->setAttribute('need_modify', true);
+            }
+
+            if (!isset($need_source[$val->ma_id])) {
+                $val->setAttribute('need_source', true);
             }
         }
 
@@ -89,10 +109,14 @@ class AnagraphController extends Controller
             $one_com['usage'] = implode(',', $usage);
         }
 
+        $anagraphsource = Anagraph::where('is_del', '=', 0)->find($ma_id)->anagraphsource()->get();
+        $anagraphsource = $anagraphsource->toArray();
+
         $anagraph = Anagraph::where('ma_id', '=', $ma_id)->where('is_del', '=', 0)->first();
         $anagraph = $anagraph->toArray();
 
         $anagraph['consist'] = $composes;
+        $anagraph['anagraph_source'] = $anagraphsource;
 
         $anagraph_count = Anagraph::where('ma_id', '<=', $ma_id)->where('is_del', '=', 0)->count();
         $page_index = ceil($anagraph_count / intval(config('medicine.posts_per_page')));
@@ -211,12 +235,12 @@ class AnagraphController extends Controller
                 if (empty($obj_medicine)) {
                     // 新增药物
                     $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
-                    if (isset($obj_new_medicine->id)) {
+                    if (isset($obj_new_medicine->mm_id)) {
                         if ($int_mac_id > 0) {
                             AnagraphCompose::where('mac_id', '=', $int_mac_id)
                                 ->where('is_del', '=', 0)
                                 ->update([
-                                    'mm_id'             => intval($obj_new_medicine->id),
+                                    'mm_id'             => intval($obj_new_medicine->mm_id),
                                     'dosage'            => $str_dosage,
                                     'standard_dosage'   => $standard_dosage,
                                     'usage'             => $str_usage,
@@ -226,7 +250,7 @@ class AnagraphController extends Controller
                             // 新增药物组成
                             AnagraphCompose::create([
                                 'ma_id'             => $int_ma_id,
-                                'mm_id'             => intval($obj_new_medicine->id),
+                                'mm_id'             => intval($obj_new_medicine->mm_id),
                                 'dosage'            => $str_dosage,
                                 'standard_dosage'   => $standard_dosage,
                                 'usage'             => $str_usage,
@@ -315,7 +339,7 @@ class AnagraphController extends Controller
         if (empty($obj_new_anagraph)) {
             return '0';
         } else {
-            $int_ma_id = $obj_new_anagraph->id;
+            $int_ma_id = $obj_new_anagraph->ma_id;
         }
 
         foreach ($arr_medicines as $one_medicine) {
@@ -331,10 +355,10 @@ class AnagraphController extends Controller
             if (empty($obj_medicine)) {
                 // 新增药物
                 $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
-                if (!isset($obj_new_medicine->id)) {
+                if (!isset($obj_new_medicine->mm_id)) {
                     return '0';
                 } else {
-                    $int_mm_id = $obj_new_medicine->id;
+                    $int_mm_id = $obj_new_medicine->mm_id;
                 }
             } else {
                 $int_mm_id = $obj_medicine->mm_id;
@@ -415,5 +439,276 @@ class AnagraphController extends Controller
         }
 
         return '1';
+    }
+
+    public function deleteAnagraph(Request $request) {
+        $int_ma_id = intval($request->get('ma_id'));
+
+        if ($int_ma_id > 0) {
+            // 1.删除方剂
+            Anagraph::where('ma_id', '=', $int_ma_id)
+                ->where('is_del', '=', 0)
+                ->update([
+                    'is_del' => 1
+                ]);
+            // 2.删除方剂组成
+            AnagraphCompose::where('ma_id', '=', $int_ma_id)
+                ->where('is_del', '=', 0)
+                ->update([
+                    'is_del' => 1
+                ]);
+
+            return '1';
+        }
+
+        return '0';
+    }
+
+    public function uploadAnagraphs(Request $request) {
+        $upload_file        = $request->file('import_file');
+        $anagraph_origin    = $request->get('anagraph_origin');
+
+        if ($upload_file->isValid()) {
+            $path = $upload_file->store('upload');
+
+            $str_contents = Storage::get($path);
+
+            $arr_anagraphs = $this->parseFile($str_contents);
+            $this->saveParsedData($arr_anagraphs, $anagraph_origin);
+        }
+
+        return Redirect::to('import');
+    }
+
+    private function saveParsedData($arr_anagraphs, $anagraph_origin) {
+        foreach ($arr_anagraphs as $one_anagraph) {
+            if (isset($one_anagraph['consist'])) {
+                $str_anagraph = $one_anagraph['anagraph_name'];
+
+                $arr_ana_res = Anagraph::where('anagraph_name', '=', $str_anagraph)
+                                ->where('anagraph_origin', '=', $anagraph_origin)
+                                ->where('is_del', '=', 0)
+                                ->first();
+
+                if ($arr_ana_res && isset($arr_ana_res->anagraph_name)) {
+                    $int_ma_id = intval($arr_ana_res->ma_id);
+                } else {
+                    // 插入药方数据
+                    $obj_create_ana = Anagraph::create([
+                        'anagraph_name'     => $one_anagraph['anagraph_name'],
+                        'anagraph_origin'   => $anagraph_origin,
+                        'indexs'            => json_encode($one_anagraph['indexs']),
+                        'create_time'       => date('Y-m-d H:i:s', time()),
+                        'modify_time'       => date('Y-m-d H:i:s', time())
+                    ]);
+
+                    $int_ma_id = $obj_create_ana->ma_id;
+                }
+
+
+                $anagraph_source_data = AnagraphSourceRelation::where('ma_id', $int_ma_id)->first();
+                if (!$anagraph_source_data) {
+                    $obj_pre = PrescriptionDataSource::where('name', '=', $one_anagraph['anagraph_name'])
+                        ->where('origin', '=', $one_anagraph['origin'])
+                        ->first();
+                    if ($obj_pre) {
+                        $arr_pre = $obj_pre->toArray();
+
+                        AnagraphSourceRelation::create([
+                            'ma_id' => $int_ma_id,
+                            'mp_id' => $arr_pre['mp_id']
+                        ]);
+                    }
+                }
+
+                foreach ($one_anagraph['consist'] as $one_data) {
+                    if (!isset($one_data['medicine_name'])) {
+                        continue;
+                    }
+
+                    $str_medicine = $one_data['medicine_name'];
+
+                    $arr_med_res = Medicament::where('medicine_name', '=', $str_medicine)
+                        ->where('is_del', '=', 0)
+                        ->first();
+
+                    if ($arr_med_res && isset($arr_med_res->medicine_name)) {
+                        $int_mm_id = intval($arr_med_res->mm_id);
+                    } else {
+                        // 插入药剂数据
+                        $obj_create_med = Medicament::create(array(
+                            'medicine_name' => $str_medicine,
+                            'create_time'   => date('Y-m-d H:i:s', time()),
+                            'modify_time'   => date('Y-m-d H:i:s', time())
+                        ));
+
+                        $int_mm_id = $obj_create_med->mm_id;
+                    }
+
+                    $arr_com_res = AnagraphCompose::where('ma_id', '=', $int_ma_id)
+                        ->where('mm_id', '=', $int_mm_id)
+                        ->where('is_del', '=', 0)
+                        ->first();
+
+                    if ($arr_com_res && isset($arr_com_res->ma_id)) {
+                        $arr_com_res = $arr_com_res->toArray();
+                        AnagraphCompose::where('mac_id', '=', $arr_com_res['mac_id'])
+                            ->where('is_del', '=', 0)
+                            ->update([
+                                'ma_id'             => $int_ma_id,
+                                'mm_id'             => $int_mm_id,
+                                'dosage'            => isset($one_data['medicine_dosage']) ? $one_data['medicine_dosage']:'',
+                                'usage'             => json_encode($one_data['usage']),
+                                'create_time'       => date('Y-m-d H:i:s', time()),
+                                'modify_time'       => date('Y-m-d H:i:s', time()),
+                                'need_modify'       => isset($one_data['error']) ? 1 : 0
+                            ]);
+                    } else {
+                        AnagraphCompose::create(array(
+                            'ma_id'             => $int_ma_id,
+                            'mm_id'             => $int_mm_id,
+                            'dosage'            => isset($one_data['medicine_dosage']) ? $one_data['medicine_dosage']:'',
+                            'usage'             => json_encode($one_data['usage']),
+                            'create_time'       => date('Y-m-d H:i:s', time()),
+                            'modify_time'       => date('Y-m-d H:i:s', time()),
+                            'need_modify'       => isset($one_data['error']) ? 1 : 0
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
+    private function parseFile(string $str_content) {
+        $arr_content = explode("\n", $str_content);
+
+        $arr_anagraphs = [];
+
+        $cousor = 0;
+        $line_flag = false;
+        foreach ($arr_content as $str_line) {
+        	if (!empty($str_line)) {
+        		$str_line = trim($str_line);
+
+        		if (preg_match_all('/^([\x{4e00}-\x{9fa5}]*):(\S+)([\x{4e00}-\x{9fa5}]*)/isu', $str_line, $matches) &&
+        			isset($matches[1][0]) &&
+        			isset($matches[2][0])
+        		) {
+
+        			if ($matches[1][0] == '名称') {
+        				$tmp_ana = [];
+        				$tmp_ana['anagraph_name'] = trim($matches[2][0]);
+
+        				$cousor += 1;
+        				$line_flag = 1;
+        			}
+
+        			if ($matches[1][0] == '组成') {
+        				$tmp_ana['consist'] = $this->getConsist(trim($matches[2][0]));
+
+        				$line_flag = 2;
+        			}
+
+                    if ($matches[1][0] == '来源') {
+        				$tmp_ana['origin'] = trim($matches[2][0]);
+
+        				$line_flag = 3;
+        			}
+        		}
+
+        		if ($line_flag == 3) {
+        			$tmp_ana['indexs'] = [];
+        			$arr_anagraphs[] = $tmp_ana;
+
+        			$tmp_ana = [];
+        			$line_flag = 0;
+        		}
+        	}
+        }
+
+        return $arr_anagraphs;
+    }
+
+    private function getConsist($str_consist) {
+    	$split_arr = [
+    		1, 2, 3, 4, 5, 6, 7, 8, 9, '半'
+    	];
+
+    	$std_consist = preg_replace('/（.*?）/', '', $str_consist);
+    	// var_dump([$tmp_consist, $str_consist]);exit;
+
+    	$tmp_consist = strstr($std_consist, '各等分', true);
+    	if ($tmp_consist) {
+    		$arr_consist = explode('、', $tmp_consist);
+    	} else {
+    		$arr_consist = explode('，', $std_consist);
+    	}
+
+    	$return_consist = [];
+
+    	foreach ($arr_consist as $item_con) {
+    		$item_con = str_replace("。", '', $item_con);
+
+    		$tmp_medicine = [];
+    		foreach ($split_arr as $item_split) {
+    			$tmp_name = strstr($item_con, strval($item_split), true);
+    			$tmp_dosage = strstr($item_con, strval($item_split));
+
+    			if ($tmp_name) {
+    				$tmp_medicine['medicine_name'] = $tmp_name;
+    				if ($tmp_dosage) {
+    					$tmp_medicine['medicine_dosage'] = $tmp_dosage;
+    				} else {
+    					$tmp_medicine['medicine_dosage'] = '';
+    				}
+    				break;
+    			}
+    		}
+
+    		$str_consist = str_replace($tmp_medicine['medicine_name'], '', $str_consist);
+    		$str_consist = str_replace($tmp_medicine['medicine_dosage'], '', $str_consist);
+
+    		if (isset($tmp_medicine['medicine_name'])) {
+    			$return_consist[] = $tmp_medicine;
+    		} else {
+    			$tmp_medicine['medicine_name'] = $item_con;
+    			$tmp_medicine['medicine_dosage'] = '';
+    			$tmp_medicine['error'] = true;
+
+    			$return_consist[] = $tmp_medicine;
+    		}
+    	}
+
+    	$arr_usage = [];
+    	$tmp_arr_usage = explode('，（', $str_consist);
+    	foreach ($tmp_arr_usage as $one_tmp_usage) {
+    		$tmp_usage = strstr($one_tmp_usage, '）');
+    		if (!$tmp_usage) {
+    			$arr_usage[] = $one_tmp_usage;
+    		} else {
+    			$arr_tmp_usage_exp = explode('，', $tmp_usage);
+    			if (count($arr_tmp_usage_exp) > 1) {
+    				foreach ($arr_tmp_usage_exp as $one_exp) {
+    					if ($one_exp == '）') {
+    						$arr_usage[] = $one_tmp_usage;
+    					} else {
+    						$arr_usage[] = "";
+    					}
+    				}
+    			} else {
+    				$arr_usage[] = $one_tmp_usage;
+    			}
+    		}
+    	}
+
+    	foreach ($arr_usage as $index => $item_usage) {
+    		$str_replace 	= strstr($item_usage, '）');
+    		$item_usage 	= str_replace($str_replace, '', $item_usage);
+    		$item_usage 	= str_replace('。', '', $item_usage);
+
+    		$return_consist[$index]['usage'] = [$item_usage];
+    	}
+
+    	return $return_consist;
     }
 }

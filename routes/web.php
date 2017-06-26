@@ -19,6 +19,12 @@ Route::get('list', 'AnagraphController@list');
 Route::get('detail/{ma_id}', 'AnagraphController@showAnagraph');
 Route::get('edit/{ma_id}', 'AnagraphController@editAnagraph');
 Route::post('doedit', 'AnagraphController@doEditAnagraph');
+Route::post('delete', 'AnagraphController@deleteAnagraph');
+Route::get('import', function () {
+    return view('anagraph.import');
+});
+
+Route::post('uploadAnagraphs', 'AnagraphController@uploadAnagraphs');
 
 Route::get('add', function () {
     return view('anagraph.add');
@@ -28,6 +34,8 @@ Route::post('create', 'AnagraphController@createAnagraph');
 Route::post('calculate', 'AnagraphController@calculateSimilarity');
 
 Route::get('medicines', 'MedicineController@list');
+Route::get('medicineDetail/{mm_id}', 'MedicineController@showMedicine');
+Route::post('deleteMedSource', 'MedicineController@delteMedicineRelation');
 
 Route::get('diseases', 'DiseaseController@list');
 Route::get('addDisease', function () {
@@ -49,6 +57,20 @@ Route::get('editSyndromeAlias/{mts_id}', 'SyndromeController@editSyndromeAlias')
 Route::post('doeditSyndromeAlias', 'SyndromeController@doEditSyndromeAlias');
 Route::post('createSyndrome', 'SyndromeController@createSyndrome');
 Route::post('deleteSyndrome', 'SyndromeController@deleteSyndrome');
+
+Route::get('prescriptions', 'PrescriptionDataSourceController@list');
+Route::get('prescriptionDetail/{mp_id}', 'PrescriptionDataSourceController@detail');
+
+Route::get('meddict', 'MedicineDataSourceController@list');
+Route::get('medDetail/{mmds_id}', 'MedicineDataSourceController@detail');
+
+Route::post('search/anagraph', 'SearchController@searchAnagraph');
+Route::post('search/presource', 'SearchController@prescriptionSource');
+Route::post('search/exportFile', 'SearchController@exportData');
+
+Route::get('download',function(){
+    return response()->download(storage_path() . '/app/public/prescription.txt', 'prescription.txt');
+});
 
 Auth::routes();
 Route::get('home', 'HomeController@index');
