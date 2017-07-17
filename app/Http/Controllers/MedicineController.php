@@ -20,6 +20,7 @@ class MedicineController extends Controller
     public function list()
     {
         $posts = Medicament::where('is_del', '=', 0)
+            ->where('is_missing', '=', 0)
             ->orderBy('mm_id')
             ->paginate(config('medicine.posts_per_page'));
 
@@ -76,10 +77,10 @@ class MedicineController extends Controller
     }
 
     public function showMedicine($mm_id) {
-        $medsource = Medicament::where('is_del', '=', 0)->find($mm_id)->medicinesource()->get();
+        $medsource = Medicament::where('is_del', '=', 0)->where('is_missing', '=', 0)->find($mm_id)->medicinesource()->get();
         $medsource = $medsource->toArray();
 
-        $medicine = Medicament::where('mm_id', '=', $mm_id)->where('is_del', '=', 0)->first();
+        $medicine = Medicament::where('mm_id', '=', $mm_id)->where('is_del', '=', 0)->where('is_missing', '=', 0)->first();
         $medicine = $medicine->toArray();
 
         if (!empty($medsource)) {
@@ -109,5 +110,25 @@ class MedicineController extends Controller
         } else {
             return '0';
         }
+    }
+
+    public function setMedicineMissing(Request $request) {
+        $int_mm_id = intval($request->get('mm_id'));
+
+        if ($int_mm_id > 0) {
+            // 1.设为散轶
+            Medicament::where('mm_id', '=', $int_mm_id)
+                ->where('is_del', '=', 0)
+                ->update([
+                    'is_missing' => 1
+                ]);
+
+            // 2.删除对应关系
+            MedicamentSourceRelation::where('mm_id', '=', $int_mm_id)->delete();
+
+            return '1';
+        }
+
+        return '0';
     }
 }

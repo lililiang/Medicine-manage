@@ -13,7 +13,8 @@ class Medicament extends Model
     protected $primaryKey = 'mm_id';
 
     protected $fillable = [
-        'medicine_name'
+        'medicine_name',
+        'is_missing'
     ];
 
     public function medicinesource()

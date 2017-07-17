@@ -36,6 +36,9 @@
                                     <td>
                                         <a href="{{ config('medicine.base_url') }}/medicineDetail/{{ $post['mm_id'] }}">
                                             {{ $post['medicine_name'] }}
+                                            @if ($post['is_missing'] == 1)
+                                                <span class="label label-danger">药物缺失</span>
+                                            @endif
                                         </a>
                                     </td>
                                     <td>{{ $post['dosage'] }}</td>
@@ -70,6 +73,7 @@
                                     <th>#</th>
                                     <th>方剂</th>
                                     <th>组成</th>
+                                    <th>操作</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -82,9 +86,50 @@
                                             </a>
                                         </td>
                                         <td>{{ $one_source_ana['components'] }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" data-maid="{{ $one_source_ana['masr_id'] }}">删除</button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="exampleModalLabel">提示框</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <p>是否确定删除？</p>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-danger js-del_syn" data-maid="" onclick="deleteAnagraph()">确认删除</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <script>
+                                $('#exampleModal').on('show.bs.modal', function (event) {
+                                    var button = $(event.relatedTarget); // Button that triggered the modal
+                                    var maId = button.data('maid');
+
+                                    $('.js-del_syn').attr("data-maid", maId);
+                                })
+
+                                function deleteAnagraph() {
+                                    var maId = $('.js-del_syn').data('maid')
+
+                                    $.post("{{ config('medicine.base_url') }}/delete", {'_token':'{{csrf_token()}}', 'masr_id':maId}, function(res){
+                                        res = $.parseJSON(res);
+                                        if (res == '0') {
+                                            alert('提交出错，请重新编辑');
+                                        }else {
+                                            setTimeout(location.reload(),'800');
+                                        }
+                                    });
+                                }
+                            </script>
                         </table>
                         <hr>
                     @endif

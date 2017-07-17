@@ -20,6 +20,7 @@ Route::get('detail/{ma_id}', 'AnagraphController@showAnagraph');
 Route::get('edit/{ma_id}', 'AnagraphController@editAnagraph');
 Route::post('doedit', 'AnagraphController@doEditAnagraph');
 Route::post('delete', 'AnagraphController@deleteAnagraph');
+Route::post('deleteSource', 'AnagraphController@deleteAnagraphSourceRelation');
 Route::get('import', function () {
     return view('anagraph.import');
 });
@@ -36,6 +37,7 @@ Route::post('calculate', 'AnagraphController@calculateSimilarity');
 Route::get('medicines', 'MedicineController@list');
 Route::get('medicineDetail/{mm_id}', 'MedicineController@showMedicine');
 Route::post('deleteMedSource', 'MedicineController@delteMedicineRelation');
+Route::post('setMedMissed', 'MedicineController@setMedicineMissing');
 
 Route::get('diseases', 'DiseaseController@list');
 Route::get('addDisease', function () {

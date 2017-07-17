@@ -108,7 +108,8 @@ class SearchController extends Controller
                 $tmp_arr = [
                     '名称：' . $one_source['name'],
                     '组成：' . $one_source['components'],
-                    '来源：' . $one_source['origin']
+                    '来源：' . $one_source['origin'],
+                    '编号：' . $one_source['mp_id']
                 ];
 
                 $output_data[] = implode("\n", $tmp_arr);

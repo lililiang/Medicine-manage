@@ -17,7 +17,12 @@
                     <h5>Page {{ $posts->currentPage() }} of {{ $posts->lastPage() }}</h5> -->
                     <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/add" role="button">新增方剂</a>
                     <a class="btn btn-primary" href="{{ config('medicine.base_url') }}/import" role="button">批量导入</a>
-                    <button class="btn btn-primary" onclick="calculate()">更新相似度</button>
+                    <!-- <button class="btn btn-primary" onclick="calculate()">更新相似度</button> -->
+
+                    <!-- @foreach ($sources as $source)
+                        <a class="btn btn-danger" href="{{ config('medicine.base_url') }}/deleteSource?source={{ $source }}" role="button">删除：{{ $source }}</a>
+                    @endforeach -->
+
                     <script>
                         //统一的向后台提交的处理
                         function calculate(){
@@ -49,14 +54,14 @@
                                         <a href="{{ config('medicine.base_url') }}/detail/{{ $post->ma_id }}">
                                             {{ $post->anagraph_name }}
                                         </a>
-                                        @if ($post->need_dosage)
-                                            <span class="label label-warning">剂量数据缺失</span>
+                                        @if ($post->need_find)
+                                            <span class="label label-warning">药物数据缺失</span>
                                         @endif
                                         @if ($post->need_modify)
                                             <span class="label label-danger">方剂数据出错</span>
                                         @endif
                                         @if ($post->need_source)
-                                            <span class="label label-success">方剂来源缺失</span>
+                                            <span class="label label-success">方剂大词典无此记录</span>
                                         @endif
                                     </td>
                                     <td>{{ str_limit($post->anagraph_origin) }}</td>

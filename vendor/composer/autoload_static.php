@@ -299,6 +299,7 @@ class ComposerStaticInit7a5faff07268885179bbd8e4505bc4f8
     );
 
     public static $classMap = array (
+        'AddMedicineMissingToMedicamentTable' => __DIR__ . '/../..' . '/database/migrations/2017_07_09_112146_add_medicine_missing_to_medicament_table.php',
         'AddModifyStatusToAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_12_030908_add_modify_status_to_anagraph_composes_table.php',
         'AddModifyStatusToMedicaments' => __DIR__ . '/../..' . '/database/migrations/2017_06_12_025158_add_modify_status_to_medicaments.php',
         'AddStandardDosageToAnagraphComposesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_12_081846_add_standard_dosage_to_anagraph_composes_table.php',

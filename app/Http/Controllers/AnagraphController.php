@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use Redirect;
 use App\Anagraph;
 use App\Disease;
@@ -45,8 +46,23 @@ class AnagraphController extends Controller
             ->get();
         $anagraph_composes = $anagraph_composes->toArray();
 
+        $mm_ids = [];
+        foreach ($anagraph_composes as $one_ana_com) {
+            $mm_ids[intval($one_ana_com['mm_id'])] = 1;
+        }
+        $mm_ids = array_keys($mm_ids);
+
+        $medicines = Medicament::whereIn('mm_id', $mm_ids)->where('is_missing', '=', 1)->get();
+        $medicines = $medicines->toArray();
+
+        $medicine_missing_ids = [];
+        foreach ($medicines as $one_med) {
+            $medicine_missing_ids[] = intval($one_med['mm_id']);
+        }
+
         $need_dosage_composes = [];
         $need_modify = [];
+        $need_find = [];
         foreach ($anagraph_composes as $one_com) {
             if ($one_com['standard_dosage'] == 0) {
                 $need_dosage_composes[$one_com['ma_id']] = 1;
@@ -54,6 +70,10 @@ class AnagraphController extends Controller
 
             if ($one_com['need_modify'] == 1) {
                 $need_modify[$one_com['ma_id']] = 1;
+            }
+
+            if (in_array($one_com['mm_id'], $medicine_missing_ids)) {
+                $need_find[$one_com['ma_id']] = 1;
             }
         }
 
@@ -80,9 +100,17 @@ class AnagraphController extends Controller
             if (!isset($need_source[$val->ma_id])) {
                 $val->setAttribute('need_source', true);
             }
+
+            if (isset($need_find[$val->ma_id])) {
+                $val->setAttribute('need_find', true);
+            }
         }
 
-        return view('anagraph.list', compact('posts'));
+        $sources = Anagraph::where('is_del', '=', 0)
+            ->groupBy('anagraph_origin')
+            ->pluck('anagraph_origin');
+
+        return view('anagraph.list', compact('posts', 'sources'));
     }
 
     public function showAnagraph($ma_id)
@@ -99,24 +127,42 @@ class AnagraphController extends Controller
         $medicines = $medicines->toArray();
 
         $medicines_tmp = [];
+        $missing_tmp = [];
         foreach ($medicines as $one_med) {
             $medicines_tmp[intval($one_med['mm_id'])] = $one_med['medicine_name'];
+            $missing_tmp[intval($one_med['mm_id'])] = $one_med['is_missing'];
         }
 
         foreach ($composes as &$one_com) {
-            $one_com['medicine_name'] = $medicines_tmp[intval($one_com['mm_id'])];
-            $usage = json_decode($one_com['usage'], true);
+            $one_com['medicine_name']   = $medicines_tmp[intval($one_com['mm_id'])];
+            $one_com['is_missing']      = $missing_tmp[intval($one_com['mm_id'])];
+
+            if ($one_com['usage'] == '') {
+                $usage = [];
+            } else {
+                $usage = json_decode($one_com['usage'], true);
+            }
+
             $one_com['usage'] = implode(',', $usage);
         }
 
-        $anagraphsource = Anagraph::where('is_del', '=', 0)->find($ma_id)->anagraphsource()->get();
+        $anagraphsource = Anagraph::where('is_del', '=', 0)->find($ma_id)->anagraphsource()->first();
         $anagraphsource = $anagraphsource->toArray();
+
+        $ana_rela = AnagraphSourceRelation::where('ma_id', $ma_id)
+            ->where('mp_id', $anagraphsource['mp_id'])
+            ->first()
+            ->toArray();
+
+        if ($ana_rela) {
+            $anagraphsource['masr_id'] = $ana_rela['masr_id'];
+        }
 
         $anagraph = Anagraph::where('ma_id', '=', $ma_id)->where('is_del', '=', 0)->first();
         $anagraph = $anagraph->toArray();
 
         $anagraph['consist'] = $composes;
-        $anagraph['anagraph_source'] = $anagraphsource;
+        $anagraph['anagraph_source'][] = $anagraphsource;
 
         $anagraph_count = Anagraph::where('ma_id', '<=', $ma_id)->where('is_del', '=', 0)->count();
         $page_index = ceil($anagraph_count / intval(config('medicine.posts_per_page')));
@@ -161,7 +207,7 @@ class AnagraphController extends Controller
             $ids[] = intval($one_com['mm_id']);
         }
 
-        $medicines = Medicament::whereIn('mm_id', $ids)->get();
+        $medicines = Medicament::whereIn('mm_id', $ids)->where('is_del', '=', 0)->get();
         $medicines = $medicines->toArray();
 
         $medicines_tmp = [];
@@ -172,6 +218,11 @@ class AnagraphController extends Controller
         foreach ($composes as &$one_com) {
             $one_com['medicine_name'] = $medicines_tmp[intval($one_com['mm_id'])];
             $usage = json_decode($one_com['usage'], true);
+
+            if (!$usage) {
+                $usage = [];
+            }
+
             $one_com['usage'] = implode(',', $usage);
         }
 
@@ -474,6 +525,7 @@ class AnagraphController extends Controller
             $str_contents = Storage::get($path);
 
             $arr_anagraphs = $this->parseFile($str_contents);
+
             $this->saveParsedData($arr_anagraphs, $anagraph_origin);
         }
 
@@ -491,7 +543,34 @@ class AnagraphController extends Controller
                                 ->first();
 
                 if ($arr_ana_res && isset($arr_ana_res->anagraph_name)) {
-                    $int_ma_id = intval($arr_ana_res->ma_id);
+                    $unique_name = $one_anagraph['anagraph_name'] . '-' . $one_anagraph['mp_id'];
+
+                    $arr_uni_ana_res = Anagraph::where('anagraph_name', '=', $unique_name)
+                                    ->where('anagraph_origin', '=', $anagraph_origin)
+                                    ->where('is_del', '=', 0)
+                                    ->first();
+
+                    if ($arr_uni_ana_res) {
+                        $arr_uni_ana_res = $arr_uni_ana_res->toArray();
+
+                        Anagraph::where('ma_id', '=', $arr_uni_ana_res['ma_id'])
+                            ->where('is_del', '=', 0)
+                            ->update([
+                                'modify_time'       => date('Y-m-d H:i:s', time())
+                            ]);
+
+                        $int_ma_id = intval($arr_uni_ana_res['ma_id']);
+                    } else {
+                        $obj_create_ana = Anagraph::create([
+                            'anagraph_name'     => $one_anagraph['anagraph_name'] . '-' . $one_anagraph['mp_id'],
+                            'anagraph_origin'   => $anagraph_origin,
+                            'indexs'            => json_encode($one_anagraph['indexs']),
+                            'create_time'       => date('Y-m-d H:i:s', time()),
+                            'modify_time'       => date('Y-m-d H:i:s', time())
+                        ]);
+
+                        $int_ma_id = intval($obj_create_ana->ma_id);
+                    }
                 } else {
                     // 插入药方数据
                     $obj_create_ana = Anagraph::create([
@@ -502,23 +581,15 @@ class AnagraphController extends Controller
                         'modify_time'       => date('Y-m-d H:i:s', time())
                     ]);
 
-                    $int_ma_id = $obj_create_ana->ma_id;
+                    $int_ma_id = intval($obj_create_ana->ma_id);
                 }
-
 
                 $anagraph_source_data = AnagraphSourceRelation::where('ma_id', $int_ma_id)->first();
                 if (!$anagraph_source_data) {
-                    $obj_pre = PrescriptionDataSource::where('name', '=', $one_anagraph['anagraph_name'])
-                        ->where('origin', '=', $one_anagraph['origin'])
-                        ->first();
-                    if ($obj_pre) {
-                        $arr_pre = $obj_pre->toArray();
-
-                        AnagraphSourceRelation::create([
-                            'ma_id' => $int_ma_id,
-                            'mp_id' => $arr_pre['mp_id']
-                        ]);
-                    }
+                    AnagraphSourceRelation::create([
+                        'ma_id' => $int_ma_id,
+                        'mp_id' => $one_anagraph['mp_id']
+                    ]);
                 }
 
                 foreach ($one_anagraph['consist'] as $one_data) {
@@ -558,7 +629,7 @@ class AnagraphController extends Controller
                                 'ma_id'             => $int_ma_id,
                                 'mm_id'             => $int_mm_id,
                                 'dosage'            => isset($one_data['medicine_dosage']) ? $one_data['medicine_dosage']:'',
-                                'usage'             => json_encode($one_data['usage']),
+                                'usage'             => isset($one_data['usage']) ? json_encode($one_data['usage']) : '',
                                 'create_time'       => date('Y-m-d H:i:s', time()),
                                 'modify_time'       => date('Y-m-d H:i:s', time()),
                                 'need_modify'       => isset($one_data['error']) ? 1 : 0
@@ -568,7 +639,7 @@ class AnagraphController extends Controller
                             'ma_id'             => $int_ma_id,
                             'mm_id'             => $int_mm_id,
                             'dosage'            => isset($one_data['medicine_dosage']) ? $one_data['medicine_dosage']:'',
-                            'usage'             => json_encode($one_data['usage']),
+                            'usage'             => isset($one_data['usage']) ? json_encode($one_data['usage']) : '',
                             'create_time'       => date('Y-m-d H:i:s', time()),
                             'modify_time'       => date('Y-m-d H:i:s', time()),
                             'need_modify'       => isset($one_data['error']) ? 1 : 0
@@ -590,7 +661,7 @@ class AnagraphController extends Controller
         	if (!empty($str_line)) {
         		$str_line = trim($str_line);
 
-        		if (preg_match_all('/^([\x{4e00}-\x{9fa5}]*):(\S+)([\x{4e00}-\x{9fa5}]*)/isu', $str_line, $matches) &&
+        		if (preg_match_all('/^([\x{4e00}-\x{9fa5}]*)：(\S+)([\x{4e00}-\x{9fa5}]*)/isu', $str_line, $matches) &&
         			isset($matches[1][0]) &&
         			isset($matches[2][0])
         		) {
@@ -614,9 +685,15 @@ class AnagraphController extends Controller
 
         				$line_flag = 3;
         			}
+
+                    if ($matches[1][0] == '编号') {
+        				$tmp_ana['mp_id'] = intval($matches[2][0]);
+
+        				$line_flag = 4;
+        			}
         		}
 
-        		if ($line_flag == 3) {
+        		if ($line_flag == 4) {
         			$tmp_ana['indexs'] = [];
         			$arr_anagraphs[] = $tmp_ana;
 
@@ -631,7 +708,7 @@ class AnagraphController extends Controller
 
     private function getConsist($str_consist) {
     	$split_arr = [
-    		1, 2, 3, 4, 5, 6, 7, 8, 9, '半'
+    		1, 2, 3, 4, 5, 6, 7, 8, 9, '半', '百'
     	];
 
     	$std_consist = preg_replace('/（.*?）/', '', $str_consist);
@@ -665,8 +742,13 @@ class AnagraphController extends Controller
     			}
     		}
 
-    		$str_consist = str_replace($tmp_medicine['medicine_name'], '', $str_consist);
-    		$str_consist = str_replace($tmp_medicine['medicine_dosage'], '', $str_consist);
+            if (isset($tmp_medicine['medicine_name'])) {
+                $str_consist = str_replace($tmp_medicine['medicine_name'], '', $str_consist);
+            }
+
+            if (isset($tmp_medicine['medicine_dosage'])) {
+                $str_consist = str_replace($tmp_medicine['medicine_dosage'], '', $str_consist);
+            }
 
     		if (isset($tmp_medicine['medicine_name'])) {
     			$return_consist[] = $tmp_medicine;
