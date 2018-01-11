@@ -16,6 +16,10 @@ class Anagraph extends Model
         'anagraph_name',
         'anagraph_origin',
         'indexs',
+        'author',
+        'func',
+        'usage',
+        'inference'
     ];
 
     public function anagraphsource()

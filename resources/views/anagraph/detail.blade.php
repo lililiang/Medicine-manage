@@ -14,7 +14,11 @@
 
                 <div class="panel-body">
                     <h5>方剂: {{ $anagraph['anagraph_name'] }}</h5>
+                    <h5>作者: {{ $anagraph['author'] }}</h5>
                     <h5>来源: {{ $anagraph['anagraph_origin'] }}</h5>
+                    <h5>功能: {{ $anagraph['func'] }}</h5>
+                    <h5>用法: {{ $anagraph['usage'] }}</h5>
+                    <h5>引用: {{ $anagraph['inference'] }}</h5>
                     <h5>最后修改于 : {{ $anagraph['modify_time'] }}</h5>
                     <hr>
 

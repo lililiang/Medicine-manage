@@ -240,12 +240,17 @@ class AnagraphController extends Controller
         $input_data = $request->get('data');
 
         $int_ma_id              = $input_data['ma_id'];
-        $str_anagraph_name      = $input_data['anagraph_name'];
-        $str_anagraph_origin    = $input_data['anagraph_origin'];
+        $str_anagraph_name      = strval($input_data['anagraph_name']);
+        $str_anagraph_origin    = strval($input_data['anagraph_origin']);
+        $str_author             = strval($input_data['author']);
+        $str_func               = strval($input_data['func']);
+        $str_usage              = strval($input_data['usage']);
+        $str_inference          = strval($input_data['inference']);
         $arr_medicines          = $input_data['medicines'];
 
         $obj_anagraph = Anagraph::where('ma_id', '!=', $int_ma_id)
             ->where('anagraph_name', '=', $str_anagraph_name)
+            ->where('author', '=', $str_author)
             ->where('anagraph_origin', '=', $str_anagraph_origin)
             ->where('is_del', '=', 0)
             ->first();
@@ -258,6 +263,10 @@ class AnagraphController extends Controller
                 ->update([
                     'anagraph_name'     => $str_anagraph_name,
                     'anagraph_origin'   => $str_anagraph_origin,
+                    'author'            => $str_author,
+                    'func'              => $str_func,
+                    'usage'             => $str_usage,
+                    'inference'         => $str_inference
                 ]);
         }
 
@@ -270,10 +279,10 @@ class AnagraphController extends Controller
         }
 
         foreach ($arr_medicines as $one_medicine) {
-            if (is_array($one_medicine) && count($one_medicine) > 0) {
+            if (is_array($one_medicine) && count($one_medicine) > 0 && strval($one_medicine['name']) != '') {
                 $int_mac_id         = isset($one_medicine['mac_id'])? intval($one_medicine['mac_id']) : 0;
                 $int_mm_id          = isset($one_medicine['mm_id'])? intval($one_medicine['mm_id']) : 0;
-                $str_medicine_name  = $one_medicine['name'];
+                $str_medicine_name  = strval($one_medicine['name']);
                 $str_dosage         = isset($one_medicine['dosage'])? $one_medicine['dosage'] : '';
                 $standard_dosage    = isset($one_medicine['standard_dosage'])? floatval($one_medicine['standard_dosage']) : 0.0;
                 $tmp_usage          = explode(',', strval($one_medicine['usage']));
@@ -368,12 +377,17 @@ class AnagraphController extends Controller
         // 保存的逻辑
         $input_data = $request->get('data');
 
-        $str_anagraph_name      = $input_data['anagraph_name'];
-        $str_anagraph_origin    = $input_data['anagraph_origin'];
+        $str_anagraph_name      = strval($input_data['anagraph_name']);
+        $str_anagraph_origin    = strval($input_data['anagraph_origin']);
+        $str_author             = strval($input_data['author']);
+        $str_func               = strval($input_data['func']);
+        $str_usage              = strval($input_data['usage']);
+        $str_inference          = strval($input_data['inference']);
         $arr_medicines          = $input_data['medicines'];
 
         $obj_anagraph = Anagraph::where('anagraph_name', '=', $str_anagraph_name)
             ->where('anagraph_origin', '=', $str_anagraph_origin)
+            ->where('author', '=', $str_author)
             ->where('is_del', '=', 0)
             ->first();
 
@@ -384,6 +398,10 @@ class AnagraphController extends Controller
                 'anagraph_name'     => $str_anagraph_name,
                 'anagraph_origin'   => $str_anagraph_origin,
                 'indexs'            => '[]',
+                'author'            => $str_author,
+                'func'              => $str_func,
+                'usage'             => $str_usage,
+                'inference'         => $str_inference
             ]);
         }
 
@@ -394,38 +412,40 @@ class AnagraphController extends Controller
         }
 
         foreach ($arr_medicines as $one_medicine) {
-            $str_medicine_name  = $one_medicine['name'];
-            $str_dosage         = isset($one_medicine['dosage']) ? $one_medicine['dosage'] : '';
-            $standard_dosage    = isset($one_medicine['standard_dosage']) ? floatval($one_medicine['standard_dosage']) : 0.0;
-            $tmp_usage          = explode(',', strval($one_medicine['usage']));
-            $str_usage          = json_encode($tmp_usage);
+            if (strval($one_medicine['name']) != '') {
+                $str_medicine_name  = $one_medicine['name'];
+                $str_dosage         = isset($one_medicine['dosage']) ? $one_medicine['dosage'] : '';
+                $standard_dosage    = isset($one_medicine['standard_dosage']) ? floatval($one_medicine['standard_dosage']) : 0.0;
+                $tmp_usage          = explode(',', strval($one_medicine['usage']));
+                $str_usage          = json_encode($tmp_usage);
 
-            $obj_medicine = Medicament::where('medicine_name', '=', $str_medicine_name)
+                $obj_medicine = Medicament::where('medicine_name', '=', $str_medicine_name)
                 ->where('is_del', '=', 0)
                 ->first();
-            if (empty($obj_medicine)) {
-                // 新增药物
-                $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
-                if (!isset($obj_new_medicine->mm_id)) {
-                    return '0';
+                if (empty($obj_medicine)) {
+                    // 新增药物
+                    $obj_new_medicine = Medicament::create(['medicine_name' => $str_medicine_name]);
+                    if (!isset($obj_new_medicine->mm_id)) {
+                        return '0';
+                    } else {
+                        $int_mm_id = $obj_new_medicine->mm_id;
+                    }
                 } else {
-                    $int_mm_id = $obj_new_medicine->mm_id;
+                    $int_mm_id = $obj_medicine->mm_id;
                 }
-            } else {
-                $int_mm_id = $obj_medicine->mm_id;
-            }
 
-            // 新增药物组成
-            $obj_res = AnagraphCompose::create([
-                'ma_id'             => $int_ma_id,
-                'mm_id'             => $int_mm_id,
-                'dosage'            => $str_dosage,
-                'standard_dosage'   => $standard_dosage,
-                'usage'             => $str_usage,
-            ]);
+                // 新增药物组成
+                $obj_res = AnagraphCompose::create([
+                    'ma_id'             => $int_ma_id,
+                    'mm_id'             => $int_mm_id,
+                    'dosage'            => $str_dosage,
+                    'standard_dosage'   => $standard_dosage,
+                    'usage'             => $str_usage,
+                ]);
 
-            if (empty($obj_res)) {
-                return '0';
+                if (empty($obj_res)) {
+                    return '0';
+                }
             }
         }
 
@@ -543,10 +563,7 @@ class AnagraphController extends Controller
                                 ->first();
 
                 if ($arr_ana_res && isset($arr_ana_res->anagraph_name)) {
-                    $unique_name = $one_anagraph['anagraph_name'] . '-' . $one_anagraph['mp_id'];
-
-                    $arr_uni_ana_res = Anagraph::where('anagraph_name', '=', $unique_name)
-                                    ->where('anagraph_origin', '=', $anagraph_origin)
+                    $arr_uni_ana_res = AnagraphSourceRelation::where('mp_id', '=', $one_anagraph['mp_id'])
                                     ->where('is_del', '=', 0)
                                     ->first();
 
@@ -556,7 +573,7 @@ class AnagraphController extends Controller
                         Anagraph::where('ma_id', '=', $arr_uni_ana_res['ma_id'])
                             ->where('is_del', '=', 0)
                             ->update([
-                                'modify_time'       => date('Y-m-d H:i:s', time())
+                                'modify_time' => date('Y-m-d H:i:s', time())
                             ]);
 
                         $int_ma_id = intval($arr_uni_ana_res['ma_id']);

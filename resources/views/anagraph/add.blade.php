@@ -15,15 +15,39 @@
                 <div class="panel-body">
                     <form class="pure-form pure-form-aligned js-slidetitlebanners">
                         <div class="form-group">
-                            <label for="anagraph_name" class="col-sm-2 control-label">药方:</label>
+                            <label for="anagraph_name" class="col-sm-2 control-label">方剂名称:</label>
                             <div class="col-sm-10">
-                                <input name="anagraph_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="" placeholder="药方">
+                                <input name="anagraph_name" type="text" class="form-control" id="anagraphName" autocomplete="off" value="" placeholder="如:桂枝汤">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="author" class="col-sm-2 control-label">作者:</label>
+                            <div class="col-sm-10">
+                                <input name="author" type="text" class="form-control" id="author" autocomplete="off" value="" placeholder="如:张仲景">
                             </div>
                         </div>
                         <div class="ml5 mt10 form-group">
-                            <label for="anagraph_origin" class="col-sm-2 control-label">药方来源:</label>
+                            <label for="anagraph_origin" class="col-sm-2 control-label">方剂来源:</label>
                             <div class="col-sm-10">
-                                <input name="anagraph_origin" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="" placeholder="药方来源">
+                                <input name="anagraph_origin" type="text" class="form-control" id="anagraphOrigin" autocomplete="off" value="" placeholder="如:伤寒论">
+                            </div>
+                        </div>
+                        <div class="ml5 mt10 form-group">
+                            <label for="anagraph_origin" class="col-sm-2 control-label">方剂功能:</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="func" autocomplete="off" value="" placeholder="如:治头项僵痛" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="ml5 mt10 form-group">
+                            <label for="anagraph_origin" class="col-sm-2 control-label">方剂用法:</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" name="usage" autocomplete="off" value="" placeholder="如:水煎服" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="ml5 mt10 form-group">
+                            <label for="inference" class="col-sm-2 control-label">引用自:</label>
+                            <div class="col-sm-10">
+                                <input name="inference" type="text" class="form-control" id="inference" autocomplete="off" value="" placeholder="如:伤寒论">
                             </div>
                         </div>
                         <div class="form-group">
