@@ -10,16 +10,33 @@
                     <a class="btn btn-link" href="{{ config('medicine.base_url') }}/detail/{{ $anagraph['ma_id'] }}" role="button">
                         {{ $anagraph['anagraph_name'] }}
                     </a>
+                    <a class="btn btn-default" href="{{ config('medicine.base_url') }}/edit/{{ $anagraph['ma_id'] }}" role="button">编辑</a>
                 </div>
 
                 <div class="panel-body">
-                    <h5>方剂: {{ $anagraph['anagraph_name'] }}</h5>
-                    <h5>作者: {{ $anagraph['author'] }}</h5>
-                    <h5>来源: {{ $anagraph['anagraph_origin'] }}</h5>
-                    <h5>功能: {{ $anagraph['func'] }}</h5>
-                    <h5>用法: {{ $anagraph['usage'] }}</h5>
-                    <h5>引用: {{ $anagraph['inference'] }}</h5>
-                    <h5>最后修改于 : {{ $anagraph['modify_time'] }}</h5>
+                    <h5><strong>方剂:</strong> {{ $anagraph['anagraph_name'] }}</h5>
+                    <h5><strong>作者:</strong> {{ $anagraph['author'] }}</h5>
+                    <h5>
+                        <strong>来源:</strong>
+                        @if ($anagraph['anagraph_origin'] != '')
+                            {{ "《" . $anagraph['anagraph_origin'] . "》"}}
+                        @endif
+                    </h5>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>功能</strong></div>
+                        <div class="panel-body">{{ $anagraph['func'] }}</div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>用法</strong></div>
+                        <div class="panel-body">{{ $anagraph['usage'] }}</div>
+                    </div>
+                    <h5>
+                        <strong>引用:</strong>
+                        @if ($anagraph['inference'] != '')
+                            {{ "《" . $anagraph['inference'] . "》"}}
+                        @endif
+                    </h5>
+                    <h5><strong>最后修改于:</strong> {{ $anagraph['modify_time'] }}</h5>
                     <hr>
 
                     <table class="table table-striped">

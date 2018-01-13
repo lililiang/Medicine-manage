@@ -36,13 +36,13 @@
                         <div class="ml5 mt10 form-group">
                             <label for="anagraph_origin" class="col-sm-2 control-label">方剂功能:</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="func" autocomplete="off" value="{{ $anagraph['func'] }}" placeholder="如:治头项僵痛" rows="3"></textarea>
+                                <textarea class="form-control" name="func" autocomplete="off" placeholder="如:治头项僵痛" rows="3">{{ $anagraph['func'] }}</textarea>
                             </div>
                         </div>
                         <div class="ml5 mt10 form-group">
                             <label for="anagraph_origin" class="col-sm-2 control-label">方剂用法:</label>
                             <div class="col-sm-10">
-                                <textarea class="form-control" name="usage" autocomplete="off" value="{{ $anagraph['usage'] }}" placeholder="如:水煎服" rows="3"></textarea>
+                                <textarea class="form-control" name="usage" autocomplete="off" placeholder="如:水煎服" rows="3">{{ $anagraph['usage'] }}</textarea>
                             </div>
                         </div>
                         <div class="ml5 mt10 form-group">

@@ -147,14 +147,18 @@ class AnagraphController extends Controller
         }
 
         $anagraphsource = Anagraph::where('is_del', '=', 0)->find($ma_id)->anagraphsource()->first();
-        $anagraphsource = $anagraphsource->toArray();
+        if (empty($anagraphsource)) {
+            $anagraphsource = [];
+        } else {
+            $anagraphsource = $anagraphsource->toArray();
 
-        $ana_rela = AnagraphSourceRelation::where('ma_id', $ma_id)
-            ->where('mp_id', $anagraphsource['mp_id'])
-            ->first()
-            ->toArray();
+            $ana_rela = AnagraphSourceRelation::where('ma_id', $ma_id)
+                ->where('mp_id', $anagraphsource['mp_id'])
+                ->first()
+                ->toArray();
+        }
 
-        if ($ana_rela) {
+        if (isset($ana_rela['masr_id'])) {
             $anagraphsource['masr_id'] = $ana_rela['masr_id'];
         }
 
@@ -162,7 +166,9 @@ class AnagraphController extends Controller
         $anagraph = $anagraph->toArray();
 
         $anagraph['consist'] = $composes;
-        $anagraph['anagraph_source'][] = $anagraphsource;
+        if (!empty($anagraphsource)) {
+            $anagraph['anagraph_source'][] = $anagraphsource;
+        }
 
         $anagraph_count = Anagraph::where('ma_id', '<=', $ma_id)->where('is_del', '=', 0)->count();
         $page_index = ceil($anagraph_count / intval(config('medicine.posts_per_page')));
@@ -230,7 +236,6 @@ class AnagraphController extends Controller
         $anagraph = $anagraph->toArray();
 
         $anagraph['consist'] = $composes;
-
         return view('anagraph.edit', compact('anagraph'));
     }
 
@@ -240,12 +245,12 @@ class AnagraphController extends Controller
         $input_data = $request->get('data');
 
         $int_ma_id              = $input_data['ma_id'];
-        $str_anagraph_name      = strval($input_data['anagraph_name']);
-        $str_anagraph_origin    = strval($input_data['anagraph_origin']);
-        $str_author             = strval($input_data['author']);
-        $str_func               = strval($input_data['func']);
-        $str_usage              = strval($input_data['usage']);
-        $str_inference          = strval($input_data['inference']);
+        $str_anagraph_name      = trim(strval($input_data['anagraph_name']));
+        $str_anagraph_origin    = trim(strval($input_data['anagraph_origin']));
+        $str_author             = trim(strval($input_data['author']));
+        $str_func               = trim(strval($input_data['func']));
+        $str_usage              = trim(strval($input_data['usage']));
+        $str_inference          = trim(strval($input_data['inference']));
         $arr_medicines          = $input_data['medicines'];
 
         $obj_anagraph = Anagraph::where('ma_id', '!=', $int_ma_id)
