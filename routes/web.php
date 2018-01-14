@@ -74,5 +74,7 @@ Route::get('download',function(){
     return response()->download(storage_path() . '/app/public/prescription.txt', 'prescription.txt');
 });
 
+Route::get('anacollections', 'AnagraphCollectionsController@list');
+
 Auth::routes();
 Route::get('home', 'HomeController@index');

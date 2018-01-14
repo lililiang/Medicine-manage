@@ -16,5 +16,8 @@ require('./jquery.serialize-object');
 Vue.component('example', require('./components/Example.vue'));
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    data: {
+        message: 'Hello Vue!'
+    }
 });
