@@ -21,6 +21,7 @@
         ]) !!};
     </script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/vue-all.js') }}"></script>
 </head>
 <body>
     <div id="app-5">

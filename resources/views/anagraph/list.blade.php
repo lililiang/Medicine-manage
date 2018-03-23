@@ -22,7 +22,8 @@
                     <!-- @foreach ($sources as $source)
                         <a class="btn btn-danger" href="{{ config('medicine.base_url') }}/deleteSource?source={{ $source }}" role="button">删除：{{ $source }}</a>
                     @endforeach -->
-
+                    <hr>
+                    {!! $posts->render() !!}
                     <script>
                         //统一的向后台提交的处理
                         function calculate(){

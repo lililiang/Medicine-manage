@@ -11,14 +11,13 @@ const { mix } = require('laravel-mix');
  |
  */
 
-mix.sass('resources/assets/sass/app.scss', 'public/css');
+mix.js('resources/assets/js/app.js', 'public/js')
+.sass('resources/assets/sass/app.scss', 'public/css');
 
-mix.combine(
-    [
-        'resources/assets/js/app.js',
+mix.combine([
         'node_modules/vue/dist/vue.js',
         'node_modules/vue/dist/vue.common.js',
         'node_modules/vue/dist/vue.esm.js'
     ],
-    'public/js/app.js'
+    'public/js/vue-all.js'
 )

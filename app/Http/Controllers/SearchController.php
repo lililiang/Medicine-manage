@@ -26,24 +26,28 @@ class SearchController extends Controller
         switch ($search_type) {
             case 'anagraph':
                 $anagraphs = Anagraph::where('anagraph_name','like','%'.strval($keyword).'%')
+                    ->where('is_del', '=', 0)
                     ->orderBy('ma_id')
                     ->get();
 
                 return view('anagraph.search', compact('anagraphs'));
             case 'medicine':
                 $medicines = Medicament::where('medicine_name','like','%'.strval($keyword).'%')
+                    ->where('is_del', '=', 0)
                     ->orderBy('mm_id')
                     ->get();
 
                 return view('medicine.search', compact('medicines'));
             case 'disease':
                 $diseases = Disease::where('disease_name','like','%'.strval($keyword).'%')
+                    ->where('is_del', '=', 0)
                     ->orderBy('md_id')
                     ->get();
 
                 return view('disease.search', compact('diseases'));
             case 'medsource':
                 $medsources = MedicineDataSource::where('name','like','%'.strval($keyword).'%')
+                    ->where('is_del', '=', 0)
                     ->orderBy('mmds_id')
                     ->get();
 

@@ -134,17 +134,23 @@ class AnagraphController extends Controller
         }
 
         foreach ($composes as &$one_com) {
-            $one_com['medicine_name']   = $medicines_tmp[intval($one_com['mm_id'])];
-            $one_com['is_missing']      = $missing_tmp[intval($one_com['mm_id'])];
+            if (isset($medicines_tmp[intval($one_com['mm_id'])])) {
+                $one_com['medicine_name']   = $medicines_tmp[intval($one_com['mm_id'])];
+                $one_com['is_missing']      = $missing_tmp[intval($one_com['mm_id'])];
 
-            if ($one_com['usage'] == '') {
-                $usage = [];
+                if ($one_com['usage'] == '') {
+                    $usage = [];
+                } else {
+                    $usage = json_decode($one_com['usage'], true);
+                }
+
+                $one_com['usage'] = implode(',', $usage);
             } else {
-                $usage = json_decode($one_com['usage'], true);
+                $one_com = [];
             }
-
-            $one_com['usage'] = implode(',', $usage);
         }
+
+        $composes = array_filter($composes);
 
         $anagraphsource = Anagraph::where('is_del', '=', 0)->find($ma_id)->anagraphsource()->first();
         if (empty($anagraphsource)) {
@@ -208,28 +214,48 @@ class AnagraphController extends Controller
         $composes = AnagraphCompose::where('ma_id', '=', $ma_id)->where('is_del', '=', 0)->get();
         $composes = $composes->toArray();
 
-        $ids = [];
-        foreach ($composes as $one_com) {
-            $ids[] = intval($one_com['mm_id']);
-        }
-
-        $medicines = Medicament::whereIn('mm_id', $ids)->where('is_del', '=', 0)->get();
-        $medicines = $medicines->toArray();
-
-        $medicines_tmp = [];
-        foreach ($medicines as $one_med) {
-            $medicines_tmp[intval($one_med['mm_id'])] = $one_med['medicine_name'];
-        }
-
-        foreach ($composes as &$one_com) {
-            $one_com['medicine_name'] = $medicines_tmp[intval($one_com['mm_id'])];
-            $usage = json_decode($one_com['usage'], true);
-
-            if (!$usage) {
-                $usage = [];
+        if (empty($composes)) {
+            $composes = [
+                [
+                    'mac_id'            => '',
+                    'mm_id'             => '',
+                    'medicine_name'     => '',
+                    'dosage'            => '',
+                    'standard_dosage'   => '',
+                    'usage'             => '',
+                    'need_modify'       => '',
+                ],
+            ];
+        } else {
+            $ids = [];
+            foreach ($composes as $one_com) {
+                $ids[] = intval($one_com['mm_id']);
             }
 
-            $one_com['usage'] = implode(',', $usage);
+            $medicines = Medicament::whereIn('mm_id', $ids)->where('is_del', '=', 0)->get();
+            $medicines = $medicines->toArray();
+
+            $medicines_tmp = [];
+            foreach ($medicines as $one_med) {
+                $medicines_tmp[intval($one_med['mm_id'])] = $one_med['medicine_name'];
+            }
+
+            foreach ($composes as &$one_com) {
+                if (!isset($medicines_tmp[intval($one_com['mm_id'])])) {
+                    $one_com = [];
+                } else {
+                    $one_com['medicine_name'] = $medicines_tmp[intval($one_com['mm_id'])];
+                    $usage = json_decode($one_com['usage'], true);
+
+                    if (!$usage) {
+                        $usage = [];
+                    }
+
+                    $one_com['usage'] = implode(',', $usage);
+                }
+            }
+
+            $composes = array_filter($composes);
         }
 
         $anagraph = Anagraph::where('ma_id', '=', $ma_id)->where('is_del', '=', 0)->first();
@@ -244,14 +270,14 @@ class AnagraphController extends Controller
         // 保存的逻辑
         $input_data = $request->get('data');
 
-        $int_ma_id              = $input_data['ma_id'];
+        $int_ma_id              = intval($input_data['ma_id']);
         $str_anagraph_name      = trim(strval($input_data['anagraph_name']));
         $str_anagraph_origin    = trim(strval($input_data['anagraph_origin']));
         $str_author             = trim(strval($input_data['author']));
         $str_func               = trim(strval($input_data['func']));
         $str_usage              = trim(strval($input_data['usage']));
         $str_inference          = trim(strval($input_data['inference']));
-        $arr_medicines          = $input_data['medicines'];
+        $arr_medicines          = isset($input_data['medicines']) ? $input_data['medicines']:[];
 
         $obj_anagraph = Anagraph::where('ma_id', '!=', $int_ma_id)
             ->where('anagraph_name', '=', $str_anagraph_name)
@@ -284,7 +310,7 @@ class AnagraphController extends Controller
         }
 
         foreach ($arr_medicines as $one_medicine) {
-            if (is_array($one_medicine) && count($one_medicine) > 0 && strval($one_medicine['name']) != '') {
+            if (is_array($one_medicine) && isset($one_medicine['name']) && $one_medicine['name']) {
                 $int_mac_id         = isset($one_medicine['mac_id'])? intval($one_medicine['mac_id']) : 0;
                 $int_mm_id          = isset($one_medicine['mm_id'])? intval($one_medicine['mm_id']) : 0;
                 $str_medicine_name  = strval($one_medicine['name']);
