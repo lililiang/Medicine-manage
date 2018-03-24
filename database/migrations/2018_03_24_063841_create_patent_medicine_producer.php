@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMedicineIngredients extends Migration
+class CreatePatentMedicineProducer extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,10 @@ class CreateMedicineIngredients extends Migration
     public function up()
     {
         //
-        Schema::create('medicine_ingredients', function (Blueprint $table) {
-            $table->increments('mmi_id');
-            $table->string('factor_name');
+        Schema::create('patent_medicine_producer', function (Blueprint $table) {
+            $table->increments('mpmp_id');
+            $table->integer('mmp_id');
+            $table->integer('mpm_id');
             $table->timestamp('create_time')->nullable();
             $table->timestamp('modify_time')->nullable();
             $table->tinyInteger('is_del')->default(0);
@@ -31,6 +32,6 @@ class CreateMedicineIngredients extends Migration
     public function down()
     {
         //
-        Schema::dropIfExists('medicine_ingredients');
+        Schema::dropIfExists('patent_medicine_producer');
     }
 }
