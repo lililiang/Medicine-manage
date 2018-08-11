@@ -8,6 +8,7 @@
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/medicines">药剂列表</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/diseases">症状管理</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/syndromes">证候管理</a></li>
+                <li role="presentation"><a href="{{ config('medicine.base_url') }}/tags">标签管理</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/prescriptions">中医方剂大词典八万记录</a></li>
                 <li role="presentation"><a href="{{ config('medicine.base_url') }}/meddict">本草数据库</a></li>
             </ul>

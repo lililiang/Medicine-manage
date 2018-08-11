@@ -32,6 +32,7 @@ Route::get('add', function () {
 });
 
 Route::post('create', 'AnagraphController@createAnagraph');
+Route::post('anaTagAdd', 'AnagraphController@addAnagraphTag');
 Route::post('calculate', 'AnagraphController@calculateSimilarity');
 
 Route::get('medicines', 'MedicineController@list');
@@ -49,7 +50,7 @@ Route::post('doeditDiseaseAlias', 'DiseaseController@doEditDiseaseAlias');
 Route::get('editDiseaseSyndromes/{md_id}', 'DiseaseController@editDiseaseSyndromes');
 Route::post('doeditDiseaseSyndromes', 'DiseaseController@doEditDiseaseSyndromes');
 Route::post('createDisease', 'DiseaseController@createDisease');
-
+// syndromes
 Route::get('syndromes', 'SyndromeController@list');
 Route::get('addSyndrome', function () {
     return view('syndrome.add');
@@ -59,6 +60,14 @@ Route::get('editSyndromeAlias/{mts_id}', 'SyndromeController@editSyndromeAlias')
 Route::post('doeditSyndromeAlias', 'SyndromeController@doEditSyndromeAlias');
 Route::post('createSyndrome', 'SyndromeController@createSyndrome');
 Route::post('deleteSyndrome', 'SyndromeController@deleteSyndrome');
+// tags
+Route::get('tags', 'TagController@list');
+Route::get('addTag', function () {
+    return view('tag.add');
+});
+Route::get('tagDetail/{mt_id}', 'TagController@showTag');
+Route::post('createTag', 'TagController@createTag');
+Route::post('deleteTag', 'TagController@deleteTag');
 
 Route::get('prescriptions', 'PrescriptionDataSourceController@list');
 Route::get('prescriptionDetail/{mp_id}', 'PrescriptionDataSourceController@detail');

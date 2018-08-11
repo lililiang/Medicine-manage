@@ -5,12 +5,81 @@
     <div class="row">
         @include('anagraph.navbar')
         <div class="col-md-8 col-md-offset-1">
+            <form class="pure-form pure-form-aligned js-slidetitlebanners">
+                <input name="ma_id" type="hidden" class="form-control" id="anagraphId" value="{{ $anagraph['ma_id'] }}" />
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>标签</strong>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            @foreach ($tags as $key => $tag_item)
+                                <div class="checkbox">
+                                    <label class="ml20">
+                                        @if ($tag_item['checked'])
+                                            <input type="checkbox" checked='checked' autocomplete="off" name="tags[{{ $key }}][mt_id]" value="{{ $tag_item['mt_id'] }}">
+                                            {{ $tag_item['name'] }}
+                                        @else
+                                            <input type="checkbox" autocomplete="off" name="tags[{{ $key }}][mt_id]" value="{{ $tag_item['mt_id'] }}">
+                                            {{ $tag_item['name'] }}
+                                        @endif
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <input class="btn btn-primary" type="submit" value="更改" />
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                $(function() {
+                    bindslides();
+                });
+
+                function bindslides(){
+                    //全局的增加和删除的绑定
+                    $('.js-slidetitlebanners').submit(function(e){
+                        e.preventDefault();
+
+                        var data = $(this).serializeObject();
+                        // if (data.length <= 0){
+                        //     //具体的判断放在后台处理
+                        //     ui.error("请输入至少一条数据");
+                        //     return ;
+                        // }
+                        doSaveData(data);
+                    });
+                }
+                //统一的向后台提交的处理
+                function doSaveData(data){
+                    $.post("{{ config('medicine.base_url') }}/anaTagAdd", {'_token':'{{csrf_token()}}', 'data':data}, function(res){
+                        res = $.parseJSON(res);
+                        if (res == '0') {
+                            alert('提交出错，请重新编辑');
+                        }else {
+                            setTimeout(location.reload(),'800');
+                        }
+                    });
+                }
+            </script>
+            <script type="text/javascript" src="//dn-staticfile.qbox.me/jquery-serialize-object/2.0.0/jquery.serialize-object.compiled.js"></script>
+
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <a class="btn btn-link" href="{{ config('medicine.base_url') }}/detail/{{ $anagraph['ma_id'] }}" role="button">
                         {{ $anagraph['anagraph_name'] }}
                     </a>
                     <a class="btn btn-default" href="{{ config('medicine.base_url') }}/edit/{{ $anagraph['ma_id'] }}" role="button">编辑</a>
+                    @if ($prev_next['prev'])
+                        <a class="btn btn-default" href="{{ config('medicine.base_url') }}/detail/{{ $prev_next['prev'] }}" role="button">上一页</a>
+                    @endif
+                    @if ($prev_next['next'])
+                        <a class="btn btn-default" href="{{ config('medicine.base_url') }}/detail/{{ $prev_next['next'] }}" role="button">下一页</a>
+                    @endif
                 </div>
 
                 <div class="panel-body">
@@ -24,7 +93,19 @@
                     </h5>
                     <div class="panel panel-default">
                         <div class="panel-heading"><strong>功能</strong></div>
-                        <div class="panel-body">{{ $anagraph['func'] }}</div>
+                        <div class="panel-body">
+                            @if (!empty($anagraph['anagraph_source'][0]['effec']))
+                                {{ $anagraph['anagraph_source'][0]['effec'] }}
+                            @endif
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>主治</strong></div>
+                        <div class="panel-body">
+                            @if (!empty($anagraph['anagraph_source'][0]['indications']))
+                                {{ $anagraph['anagraph_source'][0]['indications'] }}
+                            @endif
+                        </div>
                     </div>
                     <div class="panel panel-default">
                         <div class="panel-heading"><strong>用法</strong></div>

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 use Redirect;
 use App\Anagraph;
 use App\Disease;
+use App\Tag;
+use App\AnagraphTag;
 use App\AnagraphCompose;
 use App\AnagraphSourceRelation;
 use App\AnagraphSimilarity;
@@ -21,6 +23,7 @@ class AnagraphController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->obj_tags = new AnagraphTag;
     }
     //
     public function list()
@@ -206,7 +209,12 @@ class AnagraphController extends Controller
 
         $anagraph['similarities'] = $similarities;
 
-        return view('anagraph.detail', compact('anagraph'));
+        $tags = $this->obj_tags->getAnagraphTags($ma_id);
+
+        $obj_ana = new Anagraph;
+        $prev_next = $obj_ana->getPrevNext($ma_id);
+        
+        return view('anagraph.detail', compact('anagraph', 'tags', 'prev_next'));
     }
 
     public function editAnagraph($ma_id)
@@ -840,5 +848,25 @@ class AnagraphController extends Controller
     	}
 
     	return $return_consist;
+    }
+
+    public function addAnagraphTag(Request $request) {
+        $input_data = $request->get('data');
+
+        $int_ma_id = intval($input_data['ma_id']);
+        $tags = $input_data['tags'];
+
+        $mt_ids = [];
+
+        foreach ($tags as $tag_item) {
+            if (intval($tag_item['mt_id'])>0) {
+                $mt_ids[] = intval($tag_item['mt_id']);
+            }
+        }
+
+        $obj_ana_tag = new AnagraphTag;
+        $obj_ana_tag->addAnagraphTags($int_ma_id, $mt_ids);
+
+        return '1';
     }
 }
